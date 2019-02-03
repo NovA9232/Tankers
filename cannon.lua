@@ -10,15 +10,17 @@ function Cannon(parent)
   function c:draw()
     lg.setColor(1, 1, 1, 1)
     lg.push()
-      lg.translate(self.parent.x+(self.w/2), self.parent.y+(self.h/2))
-      lg.rotate(self.angle)
+      lg.rotate(self.angle-self.parent.angle)
+      print(self.angle)
       lg.rectangle("line", -(self.w/2), -(self.h/2), self.w, self.h)
     lg.pop()
   end
 
   function c:update(dt)
+    self.x = self.parent.x
+    self.y = self.parent.y
     mouseX, mouseY = love.mouse.getPosition()
-    c.angle = math.atan2((mouseY - self.y), (mouseX - self.x))
+    self.angle = math.atan2((mouseY - self.y), (mouseX - self.x))
   end
 
   return c

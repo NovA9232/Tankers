@@ -24,8 +24,9 @@ function Tank(id, x, y)
       lg.rotate(self.angle)
       lg.translate(-self.pointOfRotation.x, -self.pointOfRotation.y)
       lg.rectangle("line", -(self.w/2), -(self.h/2), self.w, self.h)
+
+      self.cannon:draw()
     lg.pop()
-    self.cannon:draw()
   end
 
   function t:applyResistance(dt)  -- Due to friction/air resistance
@@ -51,7 +52,7 @@ function Tank(id, x, y)
 
     self.x = self.x + self.velMag*math.cos(self.angle)
     self.y = self.y + self.velMag*math.sin(self.angle)
-    print(self.velMag*math.cos(self.angle), self.velMag*math.sin(self.angle))
+    --print(self.velMag*math.cos(self.angle), self.velMag*math.sin(self.angle))
     self.cannon:update()
   end
 
