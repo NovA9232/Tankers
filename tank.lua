@@ -1,3 +1,5 @@
+require "cannon"
+
 function Tank(id, x, y)
   local t = {}
   t.id = id
@@ -7,6 +9,7 @@ function Tank(id, x, y)
   t.vel = Vec2(0, 0)
   t.w = 30
   t.h = 50
+  t.cannon = Cannon(t)
 
   function t:draw()
     lg.setColor(1, 1, 1, 1)
@@ -15,6 +18,7 @@ function Tank(id, x, y)
       lg.rotate(self.angle)
       lg.rectangle("line", -(self.w/2), -(self.h/2), self.w, self.h)
     lg.pop()
+    self.cannon:draw()
   end
 
   function t:update(dt)
@@ -29,6 +33,7 @@ function Tank(id, x, y)
 
     self.x = self.x + self.vel.x*dt
     self.y = self.y + self.vel.y*dt
+    self.cannon:update()
   end
 
   table.insert(entities.players, t)
