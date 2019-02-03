@@ -8,8 +8,8 @@ function Tank(id, x, y)
   t.angle = 0
   t.pointOfRotation = Vec2(0, 0)  -- Offset from middle
   t.velMag = 0 -- Magnitude of acceleration
-  t.w = 30
-  t.h = 50
+  t.w = 50
+  t.h = 30
   t.cannon = Cannon(t)
 
   function t:getMiddle()
@@ -24,35 +24,76 @@ function Tank(id, x, y)
       lg.rotate(self.angle)
       lg.translate(-self.pointOfRotation.x, -self.pointOfRotation.y)
       lg.rectangle("line", -(self.w/2), -(self.h/2), self.w, self.h)
+      lg.line(self.h-10, 0, self.h, 0)  -- For knowing orientation.
 
       self.cannon:draw()
     lg.pop()
   end
 
   function t:applyResistance(dt)  -- Due to friction/air resistance
-    self.velMag = self.velMag*(TANK_DECEL*math.min(1/dt, 1))
+    self.velMag = self.velMag*(TANK_DECEL*math.min(144/dt, 1))
+  end
+
+  function t:accelerate(dt, totalPower)   -- Can be used to do both tracks rather than doing it individually.
+    self.velMag = self.velMag + (TANK_ACC*dt)*totalPower
+  end
+
+  function t:leftTrack(dt, power)
+    self.pointOfRotation = Vec2(self.w/2, self.h/2)
+    if power > 0 then
+      self.angle = self.angle + (TANK_ROTATE_RATE*dt)*math.abs(power)
+    else
+      self.angle = self.angle - (TANK_ROTATE_RATE*dt)*math.abs(power) -- If reversing
+    end
+    self:accelerate(dt, power)
+    self.pointOfRotation = Vec2(0, 0)
+  end
+
+  function t:rightTrack(dt, power)
+    self.pointOfRotation = Vec2(-self.w/2, -self.h/2)
+    if power > 0 then
+      self.angle = self.angle - (TANK_ROTATE_RATE*dt)*math.abs(power)
+    else
+      self.angle = self.angle + (TANK_ROTATE_RATE*dt)*math.abs(power) -- If reversing
+    end
+    self:accelerate(dt, power)
+    self.pointOfRotation = Vec2(0, 0)
   end
 
   function t:update(dt)
     if love.keyboard.isDown("w", "up") then
-      self.velMag = self.velMag + (TANK_ACC*METER)*dt
+      if love.keyboard.isDown("a", "left") then
+        self:leftTrack(dt, 0.25)
+        self:rightTrack(dt, 0.75)
+      elseif love.keyboard.isDown("d", "right") then
+        self:leftTrack(dt, 0.75)
+        self:rightTrack(dt, 0.25)
+      else
+        self:accelerate(dt, 1)
+      end
+    elseif love.keyboard.isDown("s", "down") then
+      if love.keyboard.isDown("a", "left") then
+        self:leftTrack(dt, -1)
+        self:rightTrack(dt, 1)
+      elseif love.keyboard.isDown("d", "right") then
+        self:leftTrack(dt, 1)
+        self:rightTrack(dt, -1)
+      else
+        self:accelerate(dt, -1)
+      end
+    elseif love.keyboard.isDown("a", "left") and love.keyboard.isDown("d", "right") then
+      self:accelerate(dt, 1)
+    elseif love.keyboard.isDown("a", "left") then
+      self:rightTrack(dt, 1)
+    elseif love.keyboard.isDown("d", "right") then
+      self:leftTrack(dt, 1)
     end
 
-    if love.keyboard.isDown("a", "left") then
-      t.pointOfRotation = Vec2(self.w/2, self.h/2)
-      self.angle = self.angle + (TANK_ROTATE_RATE*dt)
-      self.velMag = self.velMag + ((TANK_ACC*METER)*dt)/2  -- /2 since only 1 track
-      t.pointOfRotation = Vec2(0, 0)
-    end
-
-    if not love.keyboard.isDown("w", "a", "s", "d", "up", "left", "down", "right") then
-      self:applyResistance(dt)
-    end
-
+    self:applyResistance(dt)
 
     self.x = self.x + self.velMag*math.cos(self.angle)
     self.y = self.y + self.velMag*math.sin(self.angle)
-    --print(self.velMag*math.cos(self.angle), self.velMag*math.sin(self.angle))
+    print(self.velMag)
     self.cannon:update()
   end
 

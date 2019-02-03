@@ -11,7 +11,6 @@ function Cannon(parent)
     lg.setColor(1, 1, 1, 1)
     lg.push()
       lg.rotate(self.angle-self.parent.angle)
-      print(self.angle)
       lg.rectangle("line", -(self.w/2), -(self.h/2), self.w, self.h)
     lg.pop()
   end

@@ -11,7 +11,7 @@ function love.load()
 
   entities = {players={}}
 
-  Tank(1, 500, 400)
+  Tank(1, 200, 400)
 end
 
 function love.draw()
