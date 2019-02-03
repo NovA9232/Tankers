@@ -5,7 +5,7 @@ function Tank()
 
   end
 
-  function t:update()
+  function t:update(dt)
 
   end
 
