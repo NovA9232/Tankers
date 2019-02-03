@@ -18,9 +18,9 @@ function Cannon(parent)
     local mouseX, mouseY = love.mouse.getPosition()
     local angleToMouse = math.atan2((mouseY - self.pos.y), (mouseX - self.pos.x))
     if (self.angle + 2*math.pi) < (angleToMouse + 2*math.pi) then
-      self.angle = self.angle + (TANK_CANNON_ROTATE_RATE*dt)+self.parent.angularVelocity
+      self.angle = self.angle + (TANK_CANNON_ROTATE_RATE*dt)-self.parent.angularVelocity
     else
-      self.angle = self.angle - (TANK_CANNON_ROTATE_RATE*dt)+self.parent.angularVelocity
+      self.angle = self.angle - (TANK_CANNON_ROTATE_RATE*dt)-self.parent.angularVelocity
     end
   end
 
