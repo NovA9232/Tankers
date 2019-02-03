@@ -1,2 +1,2 @@
 # Tankers
-Idk tank thing
+A game about tanks and blowing stuff up.
