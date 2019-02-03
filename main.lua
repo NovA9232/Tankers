@@ -20,6 +20,8 @@ function love.draw()
       j[x]:draw()
     end
   end
+
+  lg.print(love.timer.getFPS(), 10, 10)
 end
 
 function love.update(dt)
