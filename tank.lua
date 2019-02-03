@@ -1,3 +1,5 @@
+require "cannon"
+
 function Tank(id, x, y)
   local t = {}
   t.id = id
@@ -8,6 +10,7 @@ function Tank(id, x, y)
   t.velMag = 0 -- Magnitude of acceleration
   t.w = 30
   t.h = 50
+  t.cannon = Cannon(t)
 
   function t:getMiddle()
     return self.x+(self.w/2), self.y+(self.h/2)
@@ -22,6 +25,7 @@ function Tank(id, x, y)
       lg.translate(-self.pointOfRotation.x, -self.pointOfRotation.y)
       lg.rectangle("line", -(self.w/2), -(self.h/2), self.w, self.h)
     lg.pop()
+    self.cannon:draw()
   end
 
   function t:applyResistance(dt)  -- Due to friction/air resistance
@@ -44,9 +48,11 @@ function Tank(id, x, y)
       self:applyResistance(dt)
     end
 
+
     self.x = self.x + self.velMag*math.cos(self.angle)
     self.y = self.y + self.velMag*math.sin(self.angle)
     print(self.velMag*math.cos(self.angle), self.velMag*math.sin(self.angle))
+    self.cannon:update()
   end
 
   table.insert(entities.players, t)
