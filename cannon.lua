@@ -1,8 +1,7 @@
 function Cannon(parent)
   local c = {}
   c.parent = parent
-  c.x = parent.x
-  c.y = parent.y
+  c.pos = parent.pos
   c.angle = 0
   c.w = 20
   c.h = 30
@@ -16,10 +15,8 @@ function Cannon(parent)
   end
 
   function c:update(dt)
-    self.x = self.parent.x
-    self.y = self.parent.y
     mouseX, mouseY = love.mouse.getPosition()
-    angleToMouse = math.atan2((mouseY - self.y), (mouseX - self.x))
+    angleToMouse = math.atan2((mouseY - self.pos.y), (mouseX - self.pos.x))
     if (self.angle + 2*math.pi) < (angleToMouse + 2*math.pi) then
       self.angle = self.angle + (TANK_CANNON_ROTATE_RATE*dt)
     else

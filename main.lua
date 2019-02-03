@@ -1,6 +1,5 @@
 require "constants"
 require "tank"
-require "vec2"
 
 lg = love.graphics
 

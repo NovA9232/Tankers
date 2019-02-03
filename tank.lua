@@ -1,10 +1,12 @@
 require "cannon"
+require "misc"
+require "debugFuncs"
+require "vec2"
 
 function Tank(id, x, y)
   local t = {}
   t.id = id
-  t.x  = x
-  t.y  = y
+  t.pos = Vec2(x, y)
   t.angle = 0
   t.pointOfRotation = Vec2(0, 0)  -- Offset from middle
   t.velMag = 0 -- Magnitude of acceleration
@@ -12,14 +14,10 @@ function Tank(id, x, y)
   t.h = 30
   t.cannon = Cannon(t)
 
-  function t:getMiddle()
-    return self.x+(self.w/2), self.y+(self.h/2)
-  end
-
   function t:draw()
     lg.setColor(1, 1, 1, 1)
     lg.push()
-      midX, midY = self:getMiddle()
+      midX, midY = getMiddle(self)
       lg.translate(midX+self.pointOfRotation.x, midY+self.pointOfRotation.y)
       lg.rotate(self.angle)
       lg.translate(-self.pointOfRotation.x, -self.pointOfRotation.y)
@@ -91,8 +89,8 @@ function Tank(id, x, y)
 
     self:applyResistance(dt)
 
-    self.x = self.x + self.velMag*math.cos(self.angle)
-    self.y = self.y + self.velMag*math.sin(self.angle)
+    self.pos.x = self.pos.x + self.velMag*math.cos(self.angle)
+    self.pos.y = self.pos.y + self.velMag*math.sin(self.angle)
     print(self.velMag)
     self.cannon:update(dt)
   end
