@@ -77,11 +77,11 @@ function Tank(id, x, y)
       end
     elseif love.keyboard.isDown("s", "down") then
       if love.keyboard.isDown("a", "left") then
-        self:leftTrack(dt, -0.1)
-        self:rightTrack(dt, -0.9)
-      elseif love.keyboard.isDown("d", "right") then
         self:leftTrack(dt, -0.9)
         self:rightTrack(dt, -0.1)
+      elseif love.keyboard.isDown("d", "right") then
+        self:leftTrack(dt, -0.1)
+        self:rightTrack(dt, -0.9)
       else
         self:accelerate(dt, -1)
       end
