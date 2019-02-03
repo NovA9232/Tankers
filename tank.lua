@@ -1,32 +1,18 @@
 require "cannon"
-require "misc"
 require "debugFuncs"
 require "vec2"
 
 function Tank(id, x, y)
   local t = {}
   t.id = id
-  t.pos = Vec2(x, y)
+  t.w = 30
+  t.h = 50
+  t.pos = Vec2(x+(t.w/2), y+(t.h/2))
   t.angle = 0
   t.pointOfRotation = Vec2(0, 0)  -- Offset from middle
   t.velMag = 0 -- Magnitude of acceleration
-  t.w = 50
-  t.h = 30
+  t.vel = Vec2(0, 0)
   t.cannon = Cannon(t)
-
-  function t:draw()
-    lg.setColor(1, 1, 1, 1)
-    lg.push()
-      midX, midY = getMiddle(self)
-      lg.translate(midX+self.pointOfRotation.x, midY+self.pointOfRotation.y)
-      lg.rotate(self.angle)
-      lg.translate(-self.pointOfRotation.x, -self.pointOfRotation.y)
-      lg.rectangle("line", -(self.w/2), -(self.h/2), self.w, self.h)
-      lg.line(self.h-10, 0, self.h, 0)  -- For knowing orientation.
-
-      self.cannon:draw()
-    lg.pop()
-  end
 
   function t:applyResistance(dt)  -- Due to friction/air resistance
     self.velMag = self.velMag*(TANK_DECEL*math.min(144/dt, 1))
@@ -37,7 +23,18 @@ function Tank(id, x, y)
   end
 
   function t:leftTrack(dt, power)
-    self.pointOfRotation = Vec2(self.w/2, self.h/2)
+    self.pointOfRotation = Vec2(self.w/2, 0)
+    if power > 0 then
+      self.angle = self.angle - (TANK_ROTATE_RATE*dt)*math.abs(power)
+    else
+      self.angle = self.angle + (TANK_ROTATE_RATE*dt)*math.abs(power) -- If reversing
+    end
+    self:accelerate(dt, power)
+    self.pointOfRotation = Vec2(0, 0)
+  end
+
+  function t:rightTrack(dt, power)
+    self.pointOfRotation = Vec2(-self.w/2, 0)
     if power > 0 then
       self.angle = self.angle + (TANK_ROTATE_RATE*dt)*math.abs(power)
     else
@@ -47,15 +44,21 @@ function Tank(id, x, y)
     self.pointOfRotation = Vec2(0, 0)
   end
 
-  function t:rightTrack(dt, power)
-    self.pointOfRotation = Vec2(-self.w/2, -self.h/2)
-    if power > 0 then
-      self.angle = self.angle - (TANK_ROTATE_RATE*dt)*math.abs(power)
-    else
-      self.angle = self.angle + (TANK_ROTATE_RATE*dt)*math.abs(power) -- If reversing
+  function t:draw()
+    lg.setColor(1, 1, 1, 1)
+    lg.push()
+      lg.translate(self.pos.x+self.pointOfRotation.x, self.pos.y+self.pointOfRotation.y)
+      lg.rotate(-self.angle)
+      lg.translate(-self.pointOfRotation.x, -self.pointOfRotation.y)
+      lg.rectangle("line", -(self.w/2), -(self.h/2), self.w, self.h)
+      lg.line(0, 20, 0, self.h/2)  -- For knowing orientation.
+
+      self.cannon:draw()  -- Will be drawn with current transformations.
+    lg.pop()
+
+    if VEL_DEBUG then
+      debugVel(self)
     end
-    self:accelerate(dt, power)
-    self.pointOfRotation = Vec2(0, 0)
   end
 
   function t:update(dt)
@@ -89,9 +92,9 @@ function Tank(id, x, y)
 
     self:applyResistance(dt)
 
-    self.pos.x = self.pos.x + self.velMag*math.cos(self.angle)
-    self.pos.y = self.pos.y + self.velMag*math.sin(self.angle)
-    print(self.velMag)
+    self.vel.x, self.vel.y = self.velMag*math.sin(self.angle), self.velMag*math.cos(self.angle)
+    self.pos.x = self.pos.x + self.vel.x*dt
+    self.pos.y = self.pos.y + self.vel.y*dt
     self.cannon:update(dt)
   end
 

@@ -6,6 +6,8 @@ lg = love.graphics
 function love.load()
   SCREEN_W = 1000
   SCREEN_H = 800
+
+  VEL_DEBUG = false
   love.window.setMode(SCREEN_W, SCREEN_H)
 
   entities = {players={}}
@@ -20,6 +22,7 @@ function love.draw()
     end
   end
 
+  lg.setColor(1, 1, 1, 1)
   lg.print(love.timer.getFPS(), 10, 10)
 end
 
@@ -28,5 +31,11 @@ function love.update(dt)
     for x=1, #j do
       j[x]:update(dt)
     end
+  end
+end
+
+function love.keypressed(key)
+  if key == "v" then
+    VEL_DEBUG = not VEL_DEBUG
   end
 end
