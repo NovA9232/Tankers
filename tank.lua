@@ -9,6 +9,7 @@ function Tank(id, x, y)
   t.h = 50
   t.pos = Vec2(x+(t.w/2), y+(t.h/2))
   t.angle = 0
+  t.angularVelocity = 0
   t.pointOfRotation = Vec2(0, 0)  -- Offset from middle
   t.velMag = 0 -- Magnitude of acceleration
   t.vel = Vec2(0, 0)
@@ -24,10 +25,11 @@ function Tank(id, x, y)
 
   function t:leftTrack(dt, power)
     self.pointOfRotation = Vec2(self.w/2, 0)
+    self.angularVelocity = (TANK_ROTATE_RATE*dt)*math.abs(power)
     if power > 0 then
-      self.angle = self.angle - (TANK_ROTATE_RATE*dt)*math.abs(power)
+      self.angle = self.angle - self.angularVelocity
     else
-      self.angle = self.angle + (TANK_ROTATE_RATE*dt)*math.abs(power) -- If reversing
+      self.angle = self.angle + self.angularVelocity -- If reversing
     end
     self:accelerate(dt, power)
     self.pointOfRotation = Vec2(0, 0)
@@ -35,10 +37,11 @@ function Tank(id, x, y)
 
   function t:rightTrack(dt, power)
     self.pointOfRotation = Vec2(-self.w/2, 0)
+    self.angularVelocity = (TANK_ROTATE_RATE*dt)*math.abs(power)
     if power > 0 then
-      self.angle = self.angle + (TANK_ROTATE_RATE*dt)*math.abs(power)
+      self.angle = self.angle + self.angularVelocity
     else
-      self.angle = self.angle - (TANK_ROTATE_RATE*dt)*math.abs(power) -- If reversing
+      self.angle = self.angle - self.angularVelocity -- If reversing
     end
     self:accelerate(dt, power)
     self.pointOfRotation = Vec2(0, 0)
@@ -96,6 +99,7 @@ function Tank(id, x, y)
     self.pos.x = self.pos.x + self.vel.x*dt
     self.pos.y = self.pos.y + self.vel.y*dt
     self.cannon:update(dt)
+    self.angularVelocity = 0
   end
 
   table.insert(entities.players, t)

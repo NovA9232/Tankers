@@ -1,7 +1,7 @@
 function Cannon(parent)
   local c = {}
   c.parent = parent
-  c.pos = parent.pos
+  c.pos = parent.pos  -- Since it is a table, this will be a reference so no need to keep updating it.
   c.angle = 0
   c.w = 20
   c.h = 30
@@ -18,9 +18,9 @@ function Cannon(parent)
     local mouseX, mouseY = love.mouse.getPosition()
     local angleToMouse = math.atan2((mouseY - self.pos.y), (mouseX - self.pos.x))
     if (self.angle + 2*math.pi) < (angleToMouse + 2*math.pi) then
-      self.angle = self.angle + (TANK_CANNON_ROTATE_RATE*dt)
+      self.angle = self.angle + (TANK_CANNON_ROTATE_RATE*dt)+self.parent.angularVelocity
     else
-      self.angle = self.angle - (TANK_CANNON_ROTATE_RATE*dt)
+      self.angle = self.angle - (TANK_CANNON_ROTATE_RATE*dt)+self.parent.angularVelocity
     end
   end
 
