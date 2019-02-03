@@ -94,7 +94,7 @@ function Tank(id, x, y)
     self.x = self.x + self.velMag*math.cos(self.angle)
     self.y = self.y + self.velMag*math.sin(self.angle)
     print(self.velMag)
-    self.cannon:update()
+    self.cannon:update(dt)
   end
 
   table.insert(entities.players, t)
