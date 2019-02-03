@@ -22,6 +22,11 @@ function Tank(id, x, y)
       self.vel.y = self.vel.y - (TANK_ACC*METER)
     end
 
+    if not love.keyboard.isDown("w", "a", "s", "d", "up", "left", "down", "right") then
+      self.vel.x = self.vel.x*(TANK_DECEL*math.min(1/dt, 1))
+      self.vel.y = self.vel.y*(TANK_DECEL*math.min(1/dt, 1))
+    end
+
     self.x = self.x + self.vel.x*dt
     self.y = self.y + self.vel.y*dt
   end
