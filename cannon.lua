@@ -20,7 +20,7 @@ function Cannon(parent)
     self.y = self.parent.y
     mouseX, mouseY = love.mouse.getPosition()
     angleToMouse = math.atan2((mouseY - self.y), (mouseX - self.x))
-    if self.angle < angleToMouse then
+    if (self.angle + 2*math.pi) < (angleToMouse + 2*math.pi) then
       self.angle = self.angle + (TANK_CANNON_ROTATE_RATE*dt)
     else
       self.angle = self.angle - (TANK_CANNON_ROTATE_RATE*dt)
