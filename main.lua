@@ -1,5 +1,6 @@
 require "constants"
 require "tank"
+require "shell"
 
 lg = love.graphics
 
@@ -7,12 +8,14 @@ function love.load()
   SCREEN_W = 1000
   SCREEN_H = 800
 
+  mouseX, mouseY = 0, 0
+
   VEL_DEBUG = false
   love.window.setMode(SCREEN_W, SCREEN_H)
 
-  entities = {players={}}
+  entities = {players={}, proj={}}  -- proj is projectiles
 
-  Tank(1, 200, 400)
+  Tank({num=1, type="tank"}, 200, 400)
 end
 
 function love.draw()
@@ -27,6 +30,8 @@ function love.draw()
 end
 
 function love.update(dt)
+  mouseX, mouseY = love.mouse.getPosition()
+
   for _, j in pairs(entities) do
     for x=1, #j do
       j[x]:update(dt)

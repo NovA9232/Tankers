@@ -1,6 +1,7 @@
 require "cannon"
 require "debugFuncs"
 require "vec2"
+require "shell"
 
 function Tank(id, x, y)
   local t = {}
