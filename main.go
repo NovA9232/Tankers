@@ -32,12 +32,12 @@ func main() {
 
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.Black)
-		rl.DrawFPS(10, 10)
 
 		for i := 0; i < len(players); i++ {
 			players[i].Draw()
 		}
 
+		rl.DrawFPS(10, 10)
 		rl.EndDrawing()
 	}
 }

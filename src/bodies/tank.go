@@ -3,13 +3,14 @@ package bodies
 import (
   "github.com/gen2brain/raylib-go/raylib"
   "tools"
+	"math"
 )
 
 const (
   TANK_W float32 = 30
   TANK_H float32 = 50
-  TANK_ACCELL = 50
-  TANK_DECEL = 0.2
+  TANK_ACCELL = 300
+  TANK_DECEL = 0.99
   TANK_TURN_SPD float32 = rl.Pi
 )
 
@@ -45,33 +46,29 @@ func (self *Tank) Draw() {
 
 func (self *Tank) Update(dt float32) {
   if rl.IsKeyDown(rl.KeyA) {
-    self.Angle -= TANK_TURN_SPD*dt
-		self.Vel = self.getNewVelAtAngle()
+    self.Angle -= TANK_TURN_SPD * dt
   }
 	if rl.IsKeyDown(rl.KeyD) {
-    self.Angle += TANK_TURN_SPD*dt
-		self.Vel = self.getNewVelAtAngle()
+    self.Angle += TANK_TURN_SPD * dt
+	}
+	if rl.IsKeyDown(rl.KeyW) {
+		self.accelerate(dt, 1)
+	}
+	if rl.IsKeyDown(rl.KeyS) {
+		self.accelerate(dt, -1)
 	}
 
-  self.accelerate(dt)
   self.applyResistance(dt)
 
-  self.Pos.X += (self.Vel.X*dt)
-  self.Pos.Y -= (self.Vel.Y*dt)
+	vel := tools.GetXYComponent(float64(self.VelMag), float64(self.Angle))
+  self.Pos.X += (vel.X*dt)
+  self.Pos.Y -= (vel.Y*dt)
 }
 
-func (self *Tank) getNewVelAtAngle() rl.Vector2 {   // Call after changing angle.
-	mag := tools.GetMagnitude(&self.Vel)
-	return tools.GetXYComponent(float64(mag), float64(self.Angle))
-}
-
-func (self *Tank) accelerate(dt float32) {
-  self.VelMag = tools.GetMagnitude(&self.Vel)
-  self.VelMag += TANK_ACCELL*dt
-  self.Vel = tools.GetXYComponent(float64(self.VelMag), float64(self.Angle))
+func (self *Tank) accelerate(dt, totalPower float32) {
+  self.VelMag += (TANK_ACCELL * dt * totalPower)
 }
 
 func (self *Tank) applyResistance(dt float32) {
-  self.VelMag -= (self.VelMag*TANK_DECEL*dt)
-  self.Vel = tools.GetXYComponent(float64(self.VelMag), float64(self.Angle))
+  self.VelMag = self.VelMag * (TANK_DECEL * float32(math.Min(144/float64(dt), 1)))
 }
