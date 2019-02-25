@@ -9,7 +9,7 @@ import (
 const (
   TANK_W float32 = 30
   TANK_H float32 = 50
-  TANK_ACCELL = 300
+  TANK_ACCELL = 200
   TANK_DECEL = 0.99
   TANK_TURN_SPD float32 = rl.Pi
 )

@@ -18,10 +18,13 @@ func main() {
 	defer rl.CloseWindow()
 	rl.SetTargetFPS(144)
 
+	camera := rl.NewCamera2D(rl.NewVector2(0, 0), rl.NewVector2(0, 0), 0, 2)
+
 	var players []*bodies.Tank
 
-	tank := bodies.NewTank(len(players), rl.NewVector2(400, 500))
+	tank := bodies.NewTank(len(players), rl.NewVector2(200, 200))
 	players = append(players, tank)
+
 	var dt float32
 
 	for !rl.WindowShouldClose() {
@@ -33,9 +36,11 @@ func main() {
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.Black)
 
+		rl.BeginMode2D(camera)
 		for i := 0; i < len(players); i++ {
 			players[i].Draw()
 		}
+		rl.EndMode2D()  // Draw players etc using camera.
 
 		rl.DrawFPS(10, 10)
 		rl.EndDrawing()
