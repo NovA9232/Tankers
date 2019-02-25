@@ -11,13 +11,16 @@ const (
 )
 
 func main() {
+	bodies.SCREEN_W = SCREEN_W
+	bodies.SCREEN_H = SCREEN_H
+
 	rl.InitWindow(int32(SCREEN_W), int32(SCREEN_H), "Tankers")
 	defer rl.CloseWindow()
 	rl.SetTargetFPS(144)
 
 	var players []*bodies.Tank
 
-	tank := bodies.NewTank(len(players), rl.NewVector2(0, 0))
+	tank := bodies.NewTank(len(players), rl.NewVector2(400, 500))
 	players = append(players, tank)
 	var dt float32
 
@@ -30,9 +33,6 @@ func main() {
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.Black)
 		rl.DrawFPS(10, 10)
-
-		// mouseV := rl.GetMousePosition()
-		// println(mouseV.X, mouseV.Y)
 
 		for i := 0; i < len(players); i++ {
 			players[i].Draw()

@@ -5,6 +5,11 @@ import (
   "tools"
 )
 
+var (
+	SCREEN_W float32
+	SCREEN_H float32
+)
+
 // Base class for bodies.
 type BaseBody struct {
   Id *ID
