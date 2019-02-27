@@ -7,19 +7,22 @@ import (
 )
 
 const (
-  TANK_W float32 = 30
-  TANK_H float32 = 50
+  TANK_W float32 = 60
+  TANK_H float32 = 100
   TANK_ACCELL = 200
   TANK_DECEL = 0.99
   TANK_TURN_SPD float32 = rl.Pi
+	TANK_CANN_TURN_SPD float32 = TwoPi
+
+	HALF_TANK_W = TANK_W/2
+	HALF_TANK_H = TANK_H/2
 )
 
 var (
-	halfTankW = TANK_W/2
-	halfTankH = TANK_H/2
-
-	tankBody rl.Texture2D
+	tankTex rl.Texture2D
 	tankFrame rl.Rectangle = rl.NewRectangle(0, 0, TANK_W, TANK_H)
+
+	tankCannonTex rl.Texture2D
 )
 
 type Tank struct {
@@ -29,23 +32,22 @@ type Tank struct {
 }
 
 func NewTank(IDNum int, newPos rl.Vector2) *Tank {
-	if tankBody.ID == uint32(0) {
+	if tankTex.ID == uint32(0) {
 		println("Loading tankBody.png texture.")
-		tankBody = rl.LoadTexture("src/assets/exports/tankBody.png")
+		tankTex = rl.LoadTexture("src/assets/exports/tankBody.png")
 	}
 
-  t := &Tank{
-    BaseBody: NewBody(NewID(IDNum, "tank"), newPos, 0, 0),
-		Cannon: nil
-    colors: []rl.Color{rl.Lime, rl.Lime, rl.SkyBlue, rl.Lime},
-  }
+	t := new(Tank)
+  t.BaseBody = NewBody(NewID(IDNum, "tank"), newPos, 0, 0)
+  t.colors = []rl.Color{rl.Lime, rl.Lime, rl.SkyBlue, rl.Lime}
 	t.newCannon()
 
 	return t
 }
 
 func (t *Tank) Draw() {
-	rl.DrawTexturePro(tankBody, tankFrame, rl.NewRectangle(t.Pos.X, t.Pos.Y, TANK_W, TANK_H), rl.NewVector2(halfTankW, halfTankH), t.Angle*rl.Rad2deg, rl.White)
+	rl.DrawTexturePro(tankTex, tankFrame, rl.NewRectangle(t.Pos.X, t.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), t.Angle*rl.Rad2deg, rl.White)
+	t.Cannon.draw()
 }
 
 func (t *Tank) Update(dt float32) {
@@ -67,6 +69,8 @@ func (t *Tank) Update(dt float32) {
 	vel := tools.GetXYComponent(float64(t.VelMag), float64(t.Angle))
   t.Pos.X += (vel.X*dt)
   t.Pos.Y -= (vel.Y*dt)
+
+	t.Cannon.update(dt)
 }
 
 func (t *Tank) accelerate(dt, totalPower float32) {
@@ -80,12 +84,38 @@ func (t *Tank) applyResistance(dt float32) {
 
 type tankCannon struct {
 	parent *Tank
-	angle float64
+	angle float32
 }
 
-func (t *Tank) newCannon *tankCannon {
-	return &tankCannon {
+func (t *Tank) newCannon() {
+	if tankCannonTex.ID == uint32(0) {
+		println("Loading tankCann.png texture.")
+		tankCannonTex = rl.LoadTexture("src/assets/exports/tankCann.png")
+	}
+
+	t.Cannon = &tankCannon {
 		parent: t,
 		angle: t.Angle,
+	}
+}
+
+func (c *tankCannon) draw() {   // Not exported since the parent should draw + update.
+	rl.DrawTexturePro(tankCannonTex, tankFrame, rl.NewRectangle(c.parent.Pos.X, c.parent.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), (c.angle + PiOv2)*rl.Rad2deg, rl.White)
+}
+
+func (c *tankCannon) update(dt float32) {
+	mPos := rl.GetMousePosition()
+	tmp := tools.SubVec(&c.parent.Pos, &mPos)
+//	rl.DrawLineEx(mPos, c.parent.Pos, 2, rl.Red)
+	angleToMouse := tools.GetAngle(&tmp)
+	diff := float32(math.Mod(float64(c.angle - angleToMouse), float64(TwoPi)))
+	angleToTurn := TANK_CANN_TURN_SPD*dt
+
+	if float32(math.Abs(float64(diff))) > angleToTurn/2 {
+		if (diff < 0 || diff > rl.Pi) {
+			c.angle += angleToTurn
+		} else {
+			c.angle -= angleToTurn
+		}
 	}
 }
