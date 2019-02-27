@@ -24,6 +24,7 @@ var (
 
 type Tank struct {
   BaseBody
+	Cannon *tankCannon
   colors []rl.Color
 }
 
@@ -35,40 +36,56 @@ func NewTank(IDNum int, newPos rl.Vector2) *Tank {
 
   t := &Tank{
     BaseBody: NewBody(NewID(IDNum, "tank"), newPos, 0, 0),
+		Cannon: nil
     colors: []rl.Color{rl.Lime, rl.Lime, rl.SkyBlue, rl.Lime},
   }
+	t.newCannon()
+
 	return t
 }
 
-func (self *Tank) Draw() {
-	rl.DrawTexturePro(tankBody, tankFrame, rl.NewRectangle(self.Pos.X, self.Pos.Y, TANK_W, TANK_H), rl.NewVector2(halfTankW, halfTankH), self.Angle*rl.Rad2deg, rl.White)
+func (t *Tank) Draw() {
+	rl.DrawTexturePro(tankBody, tankFrame, rl.NewRectangle(t.Pos.X, t.Pos.Y, TANK_W, TANK_H), rl.NewVector2(halfTankW, halfTankH), t.Angle*rl.Rad2deg, rl.White)
 }
 
-func (self *Tank) Update(dt float32) {
+func (t *Tank) Update(dt float32) {
   if rl.IsKeyDown(rl.KeyA) {
-    self.Angle -= TANK_TURN_SPD * dt
+    t.Angle -= TANK_TURN_SPD * dt
   }
 	if rl.IsKeyDown(rl.KeyD) {
-    self.Angle += TANK_TURN_SPD * dt
+    t.Angle += TANK_TURN_SPD * dt
 	}
 	if rl.IsKeyDown(rl.KeyW) {
-		self.accelerate(dt, 1)
+		t.accelerate(dt, 1)
 	}
 	if rl.IsKeyDown(rl.KeyS) {
-		self.accelerate(dt, -1)
+		t.accelerate(dt, -1)
 	}
 
-  self.applyResistance(dt)
+  t.applyResistance(dt)
 
-	vel := tools.GetXYComponent(float64(self.VelMag), float64(self.Angle))
-  self.Pos.X += (vel.X*dt)
-  self.Pos.Y -= (vel.Y*dt)
+	vel := tools.GetXYComponent(float64(t.VelMag), float64(t.Angle))
+  t.Pos.X += (vel.X*dt)
+  t.Pos.Y -= (vel.Y*dt)
 }
 
-func (self *Tank) accelerate(dt, totalPower float32) {
-  self.VelMag += (TANK_ACCELL * dt * totalPower)
+func (t *Tank) accelerate(dt, totalPower float32) {
+  t.VelMag += (TANK_ACCELL * dt * totalPower)
 }
 
-func (self *Tank) applyResistance(dt float32) {
-  self.VelMag = self.VelMag * (TANK_DECEL * float32(math.Min(144/float64(dt), 1)))
+func (t *Tank) applyResistance(dt float32) {
+  t.VelMag = t.VelMag * (TANK_DECEL * float32(math.Min(144/float64(dt), 1)))
+}
+
+
+type tankCannon struct {
+	parent *Tank
+	angle float64
+}
+
+func (t *Tank) newCannon *tankCannon {
+	return &tankCannon {
+		parent: t,
+		angle: t.Angle,
+	}
 }
