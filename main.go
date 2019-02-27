@@ -43,8 +43,6 @@ func main() {
 	rl.HideCursor()
 	rl.SetTargetFPS(144)
 
-	backgroundClr := rl.NewColor(58, 48, 43, 255)
-
 	var players []*bodies.Tank
 
 	tank := bodies.NewTank(len(players), rl.NewVector2(200, 200))
@@ -59,7 +57,7 @@ func main() {
 		}
 
 		rl.BeginDrawing()
-		rl.ClearBackground(backgroundClr)
+		rl.ClearBackground(rl.RayWhite)
 
 		for i := 0; i < len(players); i++ {
 			players[i].Draw()
