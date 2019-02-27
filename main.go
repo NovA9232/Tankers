@@ -57,7 +57,7 @@ func main() {
 		}
 
 		rl.BeginDrawing()
-		rl.ClearBackground(rl.RayWhite)
+		rl.ClearBackground(rl.Black)
 
 		for i := 0; i < len(players); i++ {
 			players[i].Draw()

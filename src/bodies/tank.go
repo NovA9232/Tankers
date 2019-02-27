@@ -20,7 +20,8 @@ const (
 
 var (
 	tankTex rl.Texture2D
-	tankFrame rl.Rectangle = rl.NewRectangle(0, 0, TANK_W, TANK_H)
+	tankFrame rl.Rectangle = rl.NewRectangle(0, 2, TANK_W, TANK_H) // Part of tank was redrawn (small line)
+	tankCannFrame rl.Rectangle = rl.NewRectangle(0, 0, TANK_W, TANK_H)
 
 	tankCannonTex rl.Texture2D
 )
@@ -34,7 +35,7 @@ type Tank struct {
 func NewTank(IDNum int, newPos rl.Vector2) *Tank {
 	if tankTex.ID == uint32(0) {
 		println("Loading tankBody.png texture.")
-		tankTex = rl.LoadTexture("src/assets/exports/tankBody.png")
+		tankTex = rl.LoadTexture("src/assets/exports/tankBodySand.png")
 	}
 
 	t := new(Tank)
@@ -90,7 +91,7 @@ type tankCannon struct {
 func (t *Tank) newCannon() {
 	if tankCannonTex.ID == uint32(0) {
 		println("Loading tankCann.png texture.")
-		tankCannonTex = rl.LoadTexture("src/assets/exports/tankCann.png")
+		tankCannonTex = rl.LoadTexture("src/assets/exports/tankCannSand.png")
 	}
 
 	t.Cannon = &tankCannon {
@@ -100,7 +101,7 @@ func (t *Tank) newCannon() {
 }
 
 func (c *tankCannon) draw() {   // Not exported since the parent should draw + update.
-	rl.DrawTexturePro(tankCannonTex, tankFrame, rl.NewRectangle(c.parent.Pos.X, c.parent.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), (c.angle + PiOv2)*rl.Rad2deg, rl.White)
+	rl.DrawTexturePro(tankCannonTex, tankCannFrame, rl.NewRectangle(c.parent.Pos.X, c.parent.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), (c.angle + PiOv2)*rl.Rad2deg, rl.White)
 }
 
 func (c *tankCannon) update(dt float32) {
