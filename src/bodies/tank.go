@@ -102,12 +102,18 @@ func (t *Tank) newCannon() {
 
 func (c *tankCannon) draw() {   // Not exported since the parent should draw + update.
 	rl.DrawTexturePro(tankCannonTex, tankCannFrame, rl.NewRectangle(c.parent.Pos.X, c.parent.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), (c.angle + PiOv2)*rl.Rad2deg, rl.White)
+	c.getEndOfCannPos()
 }
 
 func (c *tankCannon) update(dt float32) {
+	c.angle = float32(math.Mod(float64(c.angle), float64(TwoPi)))
 	angleToMouse := tools.GetAngle( tools.SubVec(c.parent.Pos, rl.GetMousePosition()) )
 	diff := angleToMouse - c.angle
-	diff = float32(math.Mod(float64(diff + rl.Pi), float64(TwoPi))) - rl.Pi
+	if diff > rl.Pi {
+		diff -= TwoPi
+	} else if diff < -rl.Pi {
+		diff += TwoPi
+	}
 	angleToTurn := TANK_CANN_TURN_SPD*dt
 
 	if float32(math.Abs(float64(diff))) > angleToTurn/2 {
@@ -117,4 +123,13 @@ func (c *tankCannon) update(dt float32) {
 			c.angle -= angleToTurn
 		}
 	}
+}
+
+func (c *tankCannon) getEndOfCannPos() rl.Vector2 {
+	pos := rl.NewVector2(c.parent.Pos.X, c.parent.Pos.Y - HALF_TANK_H)   // Position when
+	tools.RotateVec(&pos, &c.parent.Pos, c.angle + (rl.Pi/2))
+	pos.Y += HALF_TANK_H
+	rl.DrawLineEx(c.parent.Pos, pos, 1, rl.Red)
+
+	return pos
 }
