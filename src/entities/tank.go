@@ -13,6 +13,8 @@ const (
   TANK_DECEL = 0.99
   TANK_TURN_SPD float32 = rl.Pi
 	TANK_CANN_TURN_SPD float32 = TwoPi
+	TANK_SHELL_SPEED float32 = 400
+	TANK_FIRE_COOLDOWN float32 = 0.1
 
 	HALF_TANK_W = TANK_W/2
 	HALF_TANK_H = TANK_H/2
@@ -29,18 +31,16 @@ var (
 type Tank struct {
   BaseBody
 	Cannon *tankCannon
-  colors []rl.Color
 }
 
-func NewTank(IDNum int, newPos rl.Vector2) *Tank {
+func NewTank(IDNum int, pos rl.Vector2) *Tank {
 	if tankTex.ID == uint32(0) {
 		println("Loading tankBody.png texture.")
 		tankTex = rl.LoadTexture("src/assets/exports/tankBodySand.png")
 	}
 
 	t := new(Tank)
-  t.BaseBody = NewBody(NewID(IDNum, "tank"), newPos, 0, 0)
-  t.colors = []rl.Color{rl.Lime, rl.Lime, rl.SkyBlue, rl.Lime}
+  t.BaseBody = NewBody(NewID(IDNum, "tank"), pos, 0, 0)
 	t.newCannon()
 
 	return t
@@ -67,7 +67,7 @@ func (t *Tank) Update(dt float32) {
 
   t.applyResistance(dt)
 
-	vel := tools.GetXYComponent(float64(t.VelMag), float64(t.Angle))
+	vel := tools.GetXYComponent(t.VelMag, t.Angle)
   t.Pos.X += (vel.X*dt)
   t.Pos.Y -= (vel.Y*dt)
 
@@ -86,6 +86,8 @@ func (t *Tank) applyResistance(dt float32) {
 type tankCannon struct {
 	parent *Tank
 	angle float32
+	lastShotTime float32
+	firstShot bool
 }
 
 func (t *Tank) newCannon() {
@@ -97,12 +99,13 @@ func (t *Tank) newCannon() {
 	t.Cannon = &tankCannon {
 		parent: t,
 		angle: t.Angle,
+		lastShotTime: 0,
+		firstShot: true,
 	}
 }
 
 func (c *tankCannon) draw() {   // Not exported since the parent should draw + update.
 	rl.DrawTexturePro(tankCannonTex, tankCannFrame, rl.NewRectangle(c.parent.Pos.X, c.parent.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), (c.angle + PiOv2)*rl.Rad2deg, rl.White)
-	c.getEndOfCannPos()
 }
 
 func (c *tankCannon) update(dt float32) {
@@ -125,13 +128,23 @@ func (c *tankCannon) update(dt float32) {
 	} else {
 		c.angle = angleToMouse
 	}
+
+	if rl.IsMouseButtonDown(0) && (rl.GetTime() - c.lastShotTime > TANK_FIRE_COOLDOWN || c.firstShot) {
+		c.Fire()
+		if c.firstShot {
+			c.firstShot = false
+		}
+	}
 }
 
 func (c *tankCannon) getEndOfCannPos() rl.Vector2 {
 	pos := rl.NewVector2(c.parent.Pos.X, c.parent.Pos.Y - HALF_TANK_H)   // Position when
 	tools.RotateVec(&pos, &c.parent.Pos, c.angle + (rl.Pi/2))
 	pos.Y += HALF_TANK_H
-	rl.DrawLineEx(c.parent.Pos, pos, 1, rl.Red)
-
 	return pos
+}
+
+func (c *tankCannon) Fire() {
+	Ent.projec = append(Ent.projec, Projectile( NewShell(len(Ent.projec), c.getEndOfCannPos(), tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), 100, 2, 5) ))
+	c.lastShotTime = rl.GetTime()
 }
