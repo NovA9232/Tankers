@@ -4,7 +4,7 @@ import (
 	"github.com/gen2brain/raylib-go/raylib"
 	"math"
 
-	"bodies"
+	"entities"
 )
 
 const (
@@ -18,6 +18,7 @@ const (
 
 var (
 	crWDiv2 int32 = int32(math.Round(crosshairW/2))
+	ent *entities.Entities
 )
 
 func drawCrosshair() {
@@ -33,8 +34,8 @@ func drawCrosshair() {
 }
 
 func main() {
-	bodies.SCREEN_W = SCREEN_W
-	bodies.SCREEN_H = SCREEN_H
+	entities.SCREEN_W = SCREEN_W
+	entities.SCREEN_H = SCREEN_H
 
 	rl.SetConfigFlags(rl.FlagWindowUndecorated)
 	rl.SetConfigFlags(rl.FlagMsaa4xHint)
@@ -43,25 +44,17 @@ func main() {
 	rl.HideCursor()
 	rl.SetTargetFPS(144)
 
-	var players []*bodies.Tank
-
-	tank := bodies.NewTank(len(players), rl.NewVector2(200, 200))
-	players = append(players, tank)
-
-	var dt float32
+	ent = new(entities.Entities)
+	entities.Ent = ent
+	ent.AddPlayer(rl.NewVector2(400, 500))
 
 	for !rl.WindowShouldClose() {
-		dt = rl.GetFrameTime()
-		for i := 0; i < len(players); i++ {
-			players[i].Update(dt)
-		}
+		ent.UpdateAllEntites(rl.GetFrameTime())
 
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.Black)
 
-		for i := 0; i < len(players); i++ {
-			players[i].Draw()
-		}
+		ent.DrawAllEntites()
 		drawCrosshair()
 
 		rl.DrawFPS(10, 10)

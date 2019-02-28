@@ -1,4 +1,4 @@
-package bodies
+package entities
 
 import (
   "github.com/gen2brain/raylib-go/raylib"
@@ -122,6 +122,8 @@ func (c *tankCannon) update(dt float32) {
 		} else {
 			c.angle -= angleToTurn
 		}
+	} else {
+		c.angle = angleToMouse
 	}
 }
 
