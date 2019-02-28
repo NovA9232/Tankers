@@ -105,15 +105,13 @@ func (c *tankCannon) draw() {   // Not exported since the parent should draw + u
 }
 
 func (c *tankCannon) update(dt float32) {
-	mPos := rl.GetMousePosition()
-	tmp := tools.SubVec(&c.parent.Pos, &mPos)
-//	rl.DrawLineEx(mPos, c.parent.Pos, 2, rl.Red)
-	angleToMouse := tools.GetAngle(&tmp)
-	diff := float32(math.Mod(float64(c.angle - angleToMouse), float64(TwoPi)))
+	angleToMouse := tools.GetAngle( tools.SubVec(c.parent.Pos, rl.GetMousePosition()) )
+	diff := angleToMouse - c.angle
+	diff = float32(math.Mod(float64(diff + rl.Pi), float64(TwoPi))) - rl.Pi
 	angleToTurn := TANK_CANN_TURN_SPD*dt
 
 	if float32(math.Abs(float64(diff))) > angleToTurn/2 {
-		if (diff < 0 || diff > rl.Pi) {
+		if diff > 0 {
 			c.angle += angleToTurn
 		} else {
 			c.angle -= angleToTurn
