@@ -13,7 +13,7 @@ const (
   TANK_DECEL = 0.99
   TANK_TURN_SPD float32 = rl.Pi
 	TANK_CANN_TURN_SPD float32 = TwoPi
-	TANK_SHELL_SPEED float32 = 400
+	TANK_SHELL_SPEED float32 = 1000
 	TANK_FIRE_COOLDOWN float32 = 0.1
 
 	HALF_TANK_W = TANK_W/2
@@ -24,6 +24,9 @@ var (
 	tankTex rl.Texture2D
 	tankFrame rl.Rectangle = rl.NewRectangle(0, 2, TANK_W, TANK_H) // Part of tank was redrawn (small line)
 	tankCannFrame rl.Rectangle = rl.NewRectangle(0, 0, TANK_W, TANK_H)
+
+	tankCannExpl rl.Texture2D
+	tankCannExplFrame rl.Rectangle = rl.NewRectangle(0, 0, 10, 10)
 
 	tankCannonTex rl.Texture2D
 )
@@ -36,7 +39,7 @@ type Tank struct {
 func NewTank(IDNum int, pos rl.Vector2) *Tank {
 	if tankTex.ID == uint32(0) {
 		println("Loading tankBody.png texture.")
-		tankTex = rl.LoadTexture("src/assets/exports/tankBodySand.png")
+		tankTex = rl.LoadTexture("src/assets/tank/tankBodySand.png")
 	}
 
 	t := new(Tank)
@@ -93,7 +96,11 @@ type tankCannon struct {
 func (t *Tank) newCannon() {
 	if tankCannonTex.ID == uint32(0) {
 		println("Loading tankCann.png texture.")
-		tankCannonTex = rl.LoadTexture("src/assets/exports/tankCannSand.png")
+		tankCannonTex = rl.LoadTexture("src/assets/tank/tankCannSand.png")
+	}
+	if tankCannExpl.ID == uint32(0) {
+		println("Loading tankCannExpl texture.")
+		tankCannExpl = rl.LoadTexture("src/assets/tank/animations/tankCannExpl.gif")
 	}
 
 	t.Cannon = &tankCannon {
@@ -145,6 +152,6 @@ func (c *tankCannon) getEndOfCannPos() rl.Vector2 {
 }
 
 func (c *tankCannon) Fire() {
-	Ent.projec = append(Ent.projec, Projectile( NewShell(len(Ent.projec), c.getEndOfCannPos(), tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), 100, 2, 5) ))
+	Ent.projec = append(Ent.projec, Projectile( NewShell(len(Ent.projec), c.getEndOfCannPos(), tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), 100, SHELL_WIDTH, SHELL_HEIGHT) ))
 	c.lastShotTime = rl.GetTime()
 }

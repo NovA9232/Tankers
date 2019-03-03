@@ -7,6 +7,8 @@ import (
 
 const (
 	SHELL_TIMEOUT float32 = 10 // Time in seconds
+	SHELL_WIDTH int = 5
+	SHELL_HEIGHT int = 3
 )
 
 type Shell struct {
