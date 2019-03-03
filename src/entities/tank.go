@@ -15,7 +15,7 @@ const (
   TANK_TURN_SPD float32 = rl.Pi
 	TANK_CANN_TURN_SPD float32 = TwoPi
 	TANK_SHELL_SPEED float32 = 1000
-	TANK_FIRE_COOLDOWN float32 = 0.5
+	TANK_FIRE_COOLDOWN float32 = 0.2
 
 	HALF_TANK_W = TANK_W/2
 	HALF_TANK_H = TANK_H/2
@@ -23,7 +23,7 @@ const (
 
 var (
 	tankTex rl.Texture2D
-	tankFrame rl.Rectangle = rl.NewRectangle(0, 2, TANK_W, TANK_H) // Part of tank was redrawn (small line)
+	tankFrame rl.Rectangle = rl.NewRectangle(0, 2, TANK_W, TANK_H-2) // Part of tank was redrawn (small line)
 	tankCannonTex rl.Texture2D
 )
 
@@ -33,7 +33,7 @@ type Tank struct {
 }
 
 func NewTank(IDNum int, pos rl.Vector2) *Tank {
-	if tankTex.ID == uint32(0) {
+	if tankTex.ID == 0 {
 		println("Loading tankBody.png texture.")
 		tankTex = rl.LoadTexture("src/assets/tank/tankBodySand.png")
 	}
@@ -143,7 +143,6 @@ func (c *tankCannon) update(dt float32) {
 	}
 
 	if c.recoilFrame != 0 {
-		println("Doing recoil animation")
 		c.recoilTimer += dt
 		if c.recoilTimer > 0.02 {
 			c.recoilTimer = 0
@@ -164,7 +163,7 @@ func (c *tankCannon) getEndOfCannPos() rl.Vector2 {
 
 func (c *tankCannon) Fire() {
 	endPos := c.getEndOfCannPos()
-	G.Ent.projec = append(G.Ent.projec, Projectile( NewShell(len(G.Ent.projec), endPos, tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), 100, SHELL_WIDTH, SHELL_HEIGHT) ))
+	G.Ent.projec = append(G.Ent.projec, Projectile( NewShell(len(G.Ent.projec), endPos, tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), 100, int(shellDrawFrame.Width),  int(shellDrawFrame.Height))))
 	c.lastShotTime = rl.GetTime()
 
 	G.Anim = append(G.Anim, anim.NewExplosion(endPos))

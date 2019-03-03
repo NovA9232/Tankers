@@ -13,7 +13,7 @@ var (
 )
 
 func NewExplosion(p rl.Vector2) *Animation {
-	if ExplTex.ID == uint32(0) {
+	if ExplTex.ID == 0 {
 		println("Loading Expl texture.")
 		ExplTex = rl.LoadTexture("src/assets/animations/explosion/explosion.png")
 	}
