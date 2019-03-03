@@ -24,7 +24,6 @@ const (
 var (
 	tankTex rl.Texture2D
 	tankFrame rl.Rectangle = rl.NewRectangle(0, 2, TANK_W, TANK_H) // Part of tank was redrawn (small line)
-	tankCannFrame rl.Rectangle = rl.NewRectangle(0, 0, TANK_W, TANK_H)
 	tankCannonTex rl.Texture2D
 )
 
@@ -91,12 +90,16 @@ type tankCannon struct {
 	angle float32
 	lastShotTime float32
 	firstShot bool
+
+	recoilTimer float32
+	recoilFrame int
+	maxRecoilFrame int
 }
 
 func (t *Tank) newCannon() {
 	if tankCannonTex.ID == uint32(0) {
-		println("Loading tankCann.png texture.")
-		tankCannonTex = rl.LoadTexture("src/assets/tank/tankCannSand.png")
+		println("Loading tankCann texture.")
+		tankCannonTex = rl.LoadTexture("src/assets/animations/tankCann/tankCannSandRecoil.png")
 	}
 
 	t.Cannon = &tankCannon {
@@ -108,7 +111,7 @@ func (t *Tank) newCannon() {
 }
 
 func (c *tankCannon) draw() {   // Not exported since the parent should draw + update.
-	rl.DrawTexturePro(tankCannonTex, tankCannFrame, rl.NewRectangle(c.parent.Pos.X, c.parent.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), (c.angle + PiOv2)*rl.Rad2deg, rl.White)
+	rl.DrawTexturePro(tankCannonTex, rl.NewRectangle(TANK_W * float32(c.recoilFrame), 0, TANK_W, TANK_H), rl.NewRectangle(c.parent.Pos.X, c.parent.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), (c.angle + PiOv2)*rl.Rad2deg, rl.White)
 }
 
 func (c *tankCannon) update(dt float32) {
@@ -138,6 +141,18 @@ func (c *tankCannon) update(dt float32) {
 			c.firstShot = false
 		}
 	}
+
+	if c.recoilFrame != 0 {
+		println("Doing recoil animation")
+		c.recoilTimer += dt
+		if c.recoilTimer > 0.02 {
+			c.recoilTimer = 0
+			c.recoilFrame++
+			if c.recoilFrame > 10 {   // 7 frames in image
+				c.recoilFrame = 0
+			}
+		}
+	}
 }
 
 func (c *tankCannon) getEndOfCannPos() rl.Vector2 {
@@ -153,5 +168,6 @@ func (c *tankCannon) Fire() {
 	c.lastShotTime = rl.GetTime()
 
 	G.Anim = append(G.Anim, anim.NewExplosion(endPos))
+	c.recoilFrame = 1
 }
 

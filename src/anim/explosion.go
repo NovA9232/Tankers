@@ -4,9 +4,12 @@ import (
   "github.com/gen2brain/raylib-go/raylib"
 )
 
+const (
+	ExplFrameTime float32 = 0.05
+)
+
 var (
 	ExplTex rl.Texture2D
-	ExplFrameTime float32 = 0.05
 )
 
 func NewExplosion(p rl.Vector2) *Animation {
@@ -25,6 +28,7 @@ func NewExplosion(p rl.Vector2) *Animation {
 		h: 20,
 		halfW: 10,
 		halfH: 10,
+		rotation: 0,
 		texture: &ExplTex,
 	}
 }

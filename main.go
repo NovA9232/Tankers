@@ -55,7 +55,7 @@ func main() {
 		G.Update(rl.GetFrameTime())
 
 		rl.BeginDrawing()
-		rl.ClearBackground(rl.Black)
+		rl.ClearBackground(rl.RayWhite)
 
 		G.Draw()
 		drawCrosshair()
