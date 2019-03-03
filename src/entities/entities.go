@@ -4,21 +4,12 @@ import (
 	"github.com/gen2brain/raylib-go/raylib"
 )
 
-const (
-	PiOv2 float32 = rl.Pi/2
-	TwoPi float32 = rl.Pi * 2
-)
-
 var (
-	SCREEN_W float32
-	SCREEN_H float32
-
-	Ent *Entities
+	G *Game
 )
 
 type Entity interface { // Interface for body
-  Draw()
-  Update(float32)
+	Thing
 }
 
 type Projectile interface {

@@ -2,8 +2,9 @@ package entities
 
 import (
   "github.com/gen2brain/raylib-go/raylib"
-  "tools"
 	"math"
+  "tools"
+	"anim"
 )
 
 const (
@@ -24,10 +25,6 @@ var (
 	tankTex rl.Texture2D
 	tankFrame rl.Rectangle = rl.NewRectangle(0, 2, TANK_W, TANK_H) // Part of tank was redrawn (small line)
 	tankCannFrame rl.Rectangle = rl.NewRectangle(0, 0, TANK_W, TANK_H)
-
-	tankCannExpl rl.Texture2D
-	tankCannExplFrame rl.Rectangle = rl.NewRectangle(0, 0, 10, 10)
-
 	tankCannonTex rl.Texture2D
 )
 
@@ -98,10 +95,6 @@ func (t *Tank) newCannon() {
 		println("Loading tankCann.png texture.")
 		tankCannonTex = rl.LoadTexture("src/assets/tank/tankCannSand.png")
 	}
-	if tankCannExpl.ID == uint32(0) {
-		println("Loading tankCannExpl texture.")
-		tankCannExpl = rl.LoadTexture("src/assets/tank/animations/tankCannExpl.gif")
-	}
 
 	t.Cannon = &tankCannon {
 		parent: t,
@@ -152,6 +145,10 @@ func (c *tankCannon) getEndOfCannPos() rl.Vector2 {
 }
 
 func (c *tankCannon) Fire() {
-	Ent.projec = append(Ent.projec, Projectile( NewShell(len(Ent.projec), c.getEndOfCannPos(), tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), 100, SHELL_WIDTH, SHELL_HEIGHT) ))
+	endPos := c.getEndOfCannPos()
+	G.Ent.projec = append(G.Ent.projec, Projectile( NewShell(len(G.Ent.projec), endPos, tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), 100, SHELL_WIDTH, SHELL_HEIGHT) ))
 	c.lastShotTime = rl.GetTime()
+
+	G.Anim = append(G.Anim, anim.Animation(anim.NewExplosion(endPos)))
 }
+

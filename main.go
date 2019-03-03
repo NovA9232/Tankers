@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"entities"
+	"anim"
 )
 
 const (
@@ -38,23 +39,25 @@ func main() {
 	entities.SCREEN_H = SCREEN_H
 
 	rl.SetConfigFlags(rl.FlagWindowUndecorated)
-	rl.SetConfigFlags(rl.FlagMsaa4xHint)
 	rl.InitWindow(int32(SCREEN_W), int32(SCREEN_H), "Tankers")
 	defer rl.CloseWindow()
 	rl.HideCursor()
 	rl.SetTargetFPS(144)
 
-	ent = new(entities.Entities)
-	entities.Ent = ent
-	ent.AddPlayer(rl.NewVector2(400, 500))
+	G := &entities.Game {
+		Ent: new(entities.Entities),
+		Anim: []anim.Animation{},
+	}
+	entities.G = G
+	G.Ent.AddPlayer(rl.NewVector2(400, 500))
 
 	for !rl.WindowShouldClose() {
-		ent.UpdateAllEntites(rl.GetFrameTime())
+		G.Update(rl.GetFrameTime())
 
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.Black)
 
-		ent.DrawAllEntites()
+		G.Draw()
 		drawCrosshair()
 
 		rl.DrawFPS(10, 10)
