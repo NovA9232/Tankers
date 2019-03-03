@@ -22,20 +22,30 @@ type Thing interface {  // Can be drawn and updated
 
 type Game struct {
 	Ent *Entities
-	Anim []anim.Animation
+	Anim []*anim.Animation
 }
 
 func (g *Game) Update(dt float32) {
-	g.Ent.UpdateAllEntites(rl.GetFrameTime())
+	g.Ent.UpdateAllEntites(dt)
 	for i := 0; i < len(g.Anim); i++ {
 		g.Anim[i].Update(dt)
 	}
-	g.Anim = anim.CheckAnimations(g.Anim)
+	g.checkAnimations()
 }
 
 func (g *Game) Draw() {
 	g.Ent.DrawAllEntites()
 	for i := 0; i < len(g.Anim); i++ {
 		g.Anim[i].Draw()
+	}
+}
+
+func (g *Game) checkAnimations() {
+	for i := 0; i < len(g.Anim); i++ {
+		if g.Anim[i].CurrFrame > g.Anim[i].MaxFrame {
+			copy(g.Anim[i:], g.Anim[i+1:])
+			g.Anim[len(g.Anim)-1] = nil
+			g.Anim = g.Anim[:len(g.Anim)-1]
+		}
 	}
 }

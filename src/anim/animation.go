@@ -1,19 +1,31 @@
 package anim
 
-type Animation interface {
-	Draw()
-	Update(float32)
-	CheckAnimationFinished() bool
+import (
+  "github.com/gen2brain/raylib-go/raylib"
+)
+
+type Animation struct {
+	pos rl.Vector2
+	drawTimer float32
+	CurrFrame int
+	MaxFrame int
+	frameTime float32
+	w float32
+	h float32
+	halfW float32
+	halfH float32
+	rotation float32
+	texture *rl.Texture2D
 }
 
-func CheckAnimations(arr []Animation) []Animation {
-	for i := 0; i < len(arr); i++ {
-		if arr[i].CheckAnimationFinished() {
-			copy(arr[i:], arr[i+1:])
-			arr[len(arr)-1] = nil
-			arr = arr[:len(arr)-1]
-		}
-	}
+func (a *Animation) Draw() {
+	rl.DrawTexturePro(ExplTex, rl.NewRectangle(a.w * float32(a.CurrFrame), 0, a.w, a.h), rl.NewRectangle(a.pos.X, a.pos.Y, a.w, a.h), rl.NewVector2(a.halfW, a.halfH), a.rotation, rl.White)
+}
 
-	return arr
+func (a *Animation) Update(dt float32) {
+	a.drawTimer += dt
+	if a.drawTimer > a.frameTime {
+		a.drawTimer = 0
+		a.CurrFrame++
+	}
 }

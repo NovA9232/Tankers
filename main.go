@@ -46,7 +46,7 @@ func main() {
 
 	G := &entities.Game {
 		Ent: new(entities.Entities),
-		Anim: []anim.Animation{},
+		Anim: []*anim.Animation{},
 	}
 	entities.G = G
 	G.Ent.AddPlayer(rl.NewVector2(400, 500))

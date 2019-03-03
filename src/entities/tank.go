@@ -10,12 +10,12 @@ import (
 const (
   TANK_W float32 = 60
   TANK_H float32 = 100
-  TANK_ACCELL = 200
-  TANK_DECEL = 0.99
+  TANK_ACCELL = 400
+  TANK_DECEL = 5
   TANK_TURN_SPD float32 = rl.Pi
 	TANK_CANN_TURN_SPD float32 = TwoPi
 	TANK_SHELL_SPEED float32 = 1000
-	TANK_FIRE_COOLDOWN float32 = 0.1
+	TANK_FIRE_COOLDOWN float32 = 0.5
 
 	HALF_TANK_W = TANK_W/2
 	HALF_TANK_H = TANK_H/2
@@ -79,7 +79,10 @@ func (t *Tank) accelerate(dt, totalPower float32) {
 }
 
 func (t *Tank) applyResistance(dt float32) {
-  t.VelMag = t.VelMag * (TANK_DECEL * float32(math.Min(144/float64(dt), 1)))
+  t.VelMag *= float32(math.Pow(TANK_DECEL, float64(-dt)))
+	if math.Abs(float64(t.VelMag)) < 0.1 {
+		t.VelMag = 0
+	}
 }
 
 
@@ -149,6 +152,6 @@ func (c *tankCannon) Fire() {
 	G.Ent.projec = append(G.Ent.projec, Projectile( NewShell(len(G.Ent.projec), endPos, tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), 100, SHELL_WIDTH, SHELL_HEIGHT) ))
 	c.lastShotTime = rl.GetTime()
 
-	G.Anim = append(G.Anim, anim.Animation(anim.NewExplosion(endPos)))
+	G.Anim = append(G.Anim, anim.NewExplosion(endPos))
 }
 
