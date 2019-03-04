@@ -4,13 +4,14 @@ import (
 	"github.com/gen2brain/raylib-go/raylib"
 	"math"
 
+	"mapping"
 	"entities"
 	"anim"
 )
 
 const (
-	SCREEN_W = 1200
-	SCREEN_H = 1000
+	SCREEN_W = 1280
+	SCREEN_H = 720
 
 	crosshairL = 7   // Length of each part of the crosshair
 	crosshairW = 2    // Width of each part of the crosshair. Works best with multiples of 2
@@ -45,6 +46,7 @@ func main() {
 	rl.SetTargetFPS(144)
 
 	G := &entities.Game {
+		WorldMap: mapping.TestMap(SCREEN_W, SCREEN_H),
 		Ent: new(entities.Entities),
 		Anim: []*anim.Animation{},
 	}

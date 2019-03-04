@@ -29,6 +29,7 @@ var (
 
 type Tank struct {
   BaseBody
+	Deceleration float64
 	Cannon *tankCannon
 }
 
@@ -40,6 +41,7 @@ func NewTank(IDNum int, pos rl.Vector2) *Tank {
 
 	t := new(Tank)
   t.BaseBody = NewBody(NewID(IDNum, "tank"), pos, 0, 0)
+	t.Deceleration = TANK_DECEL
 	t.newCannon()
 
 	return t
@@ -78,7 +80,7 @@ func (t *Tank) accelerate(dt, totalPower float32) {
 }
 
 func (t *Tank) applyResistance(dt float32) {
-  t.VelMag *= float32(math.Pow(TANK_DECEL, float64(-dt)))
+  t.VelMag *= float32(math.Pow(t.Deceleration, float64(-dt)))
 	if math.Abs(float64(t.VelMag)) < 0.1 {
 		t.VelMag = 0
 	}

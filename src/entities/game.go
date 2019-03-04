@@ -3,6 +3,7 @@ package entities
 import (
   "github.com/gen2brain/raylib-go/raylib"
 	"anim"
+	"mapping"
 )
 
 const (
@@ -21,6 +22,7 @@ type Thing interface {  // Can be drawn and updated
 }
 
 type Game struct {
+	WorldMap *mapping.Map
 	Ent *Entities
 	Anim []*anim.Animation
 }
@@ -34,6 +36,8 @@ func (g *Game) Update(dt float32) {
 }
 
 func (g *Game) Draw() {
+	g.WorldMap.Draw()
+
 	g.Ent.DrawAllEntites()
 	for i := 0; i < len(g.Anim); i++ {
 		g.Anim[i].Draw()
