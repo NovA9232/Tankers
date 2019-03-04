@@ -23,18 +23,6 @@ var (
 	ent *entities.Entities
 )
 
-func drawCrosshair() {
-	mouseX, mouseY := rl.GetMouseX(), rl.GetMouseY()
-	posYMid := mouseY - crWDiv2
-	posXMid := mouseX - crWDiv2
-
-	rl.DrawRectangle(mouseX - crosshairGap - crosshairL, posYMid, crosshairL, crosshairW, rl.Red)   // Left part
-  rl.DrawRectangle(mouseX + crosshairGap, posYMid, crosshairL, crosshairW, rl.Red)								// Right part
-
-	rl.DrawRectangle(posXMid, mouseY - crosshairGap - crosshairL, crosshairW, crosshairL, rl.Red)   // Top part
-	rl.DrawRectangle(posXMid, mouseY + crosshairGap, crosshairW, crosshairL, rl.Red)								// Bottom part
-}
-
 func main() {
 	entities.SCREEN_W = SCREEN_W
 	entities.SCREEN_H = SCREEN_H

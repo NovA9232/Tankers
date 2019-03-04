@@ -6,7 +6,7 @@ import (
 
 type Tile struct {
 	Pos rl.Vector2
-	Deceleration float32 // Deceleration multiplier when on tile
+	Resistance float32 // Deceleration multiplier when on tile
 	texture *rl.Texture2D
 }
 

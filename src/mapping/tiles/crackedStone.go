@@ -15,7 +15,7 @@ func NewCrackedStoneTile(pos rl.Vector2) *Tile {
 	}
 	return &Tile{
 		Pos: pos,
-		Deceleration: 1,   // Multiplier of current deceleration number
+		Resistance: 1.1,   // Multiplier of current deceleration number
 		texture: &crackedStoneTex,
 	}
 }

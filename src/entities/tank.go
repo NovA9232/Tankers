@@ -14,7 +14,7 @@ const (
   TANK_DECEL = 5
   TANK_TURN_SPD float32 = rl.Pi
 	TANK_CANN_TURN_SPD float32 = TwoPi
-	TANK_SHELL_SPEED float32 = 1000
+	TANK_SHELL_SPEED float32 = 1400
 	TANK_FIRE_COOLDOWN float32 = 0.2
 
 	HALF_TANK_W = TANK_W/2
@@ -80,7 +80,9 @@ func (t *Tank) accelerate(dt, totalPower float32) {
 }
 
 func (t *Tank) applyResistance(dt float32) {
-  t.VelMag *= float32(math.Pow(t.Deceleration, float64(-dt)))
+	tileDec := G.WorldMap.GetResistanceAt(t.Pos.X, t.Pos.Y)
+
+  t.VelMag *= float32(math.Pow(t.Deceleration, float64(-dt*tileDec)))
 	if math.Abs(float64(t.VelMag)) < 0.1 {
 		t.VelMag = 0
 	}
@@ -149,7 +151,7 @@ func (c *tankCannon) update(dt float32) {
 		if c.recoilTimer > 0.02 {
 			c.recoilTimer = 0
 			c.recoilFrame++
-			if c.recoilFrame > 10 {   // 7 frames in image
+			if c.recoilFrame > 10 {   // 10 frames in image
 				c.recoilFrame = 0
 			}
 		}
