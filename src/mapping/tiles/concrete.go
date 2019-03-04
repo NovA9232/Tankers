@@ -15,6 +15,7 @@ func NewConcreteTile(pos rl.Vector2) *Tile {
 	}
 	return &Tile{
 		Pos: pos,
+		Animated: false,
 		Resistance: 1,   // Multiplier of current deceleration number
 		texture: &concreteTex,
 	}

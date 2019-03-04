@@ -5,17 +5,21 @@ import (
 )
 
 type Animation struct {
+	AnimationData
 	pos rl.Vector2
-	drawTimer float32
-	CurrFrame int
-	MaxFrame int
-	frameTime float32
 	w float32
 	h float32
 	halfW float32
 	halfH float32
 	rotation float32
 	texture *rl.Texture2D
+}
+
+type AnimationData struct {
+	drawTimer float32
+	CurrFrame int
+	MaxFrame int
+	frameTime float32
 }
 
 func (a *Animation) Draw() {

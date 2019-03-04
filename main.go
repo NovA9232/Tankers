@@ -30,8 +30,8 @@ func main() {
 	rl.SetConfigFlags(rl.FlagWindowUndecorated)
 	rl.InitWindow(int32(SCREEN_W), int32(SCREEN_H), "Tankers")
 	defer rl.CloseWindow()
-	rl.HideCursor()
 	rl.SetTargetFPS(144)
+	rl.HideCursor()
 
 	G := &entities.Game {
 		WorldMap: mapping.TestMap(SCREEN_W, SCREEN_H),
@@ -45,7 +45,7 @@ func main() {
 		G.Update(rl.GetFrameTime())
 
 		rl.BeginDrawing()
-		rl.ClearBackground(rl.RayWhite)
+		rl.ClearBackground(rl.Black)
 
 		G.Draw()
 		drawCrosshair()
