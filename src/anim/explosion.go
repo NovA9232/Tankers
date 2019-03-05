@@ -8,10 +8,10 @@ var (
 	ExplTex rl.Texture2D
 
 	ExplAnimationData AnimationData = AnimationData {
-		drawTimer: 0,
+		DrawTimer: 0,
 		CurrFrame: 0,
 		MaxFrame: 5,
-		frameTime: 0.05,
+		FrameTime: 0.05,
 	}
 )
 

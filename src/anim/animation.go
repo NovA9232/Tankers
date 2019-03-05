@@ -16,20 +16,20 @@ type Animation struct {
 }
 
 type AnimationData struct {
-	drawTimer float32
+	DrawTimer float32
 	CurrFrame int
 	MaxFrame int
-	frameTime float32
+	FrameTime float32
 }
 
 func (a *Animation) Draw() {
-	rl.DrawTexturePro(ExplTex, rl.NewRectangle(a.w * float32(a.CurrFrame), 0, a.w, a.h), rl.NewRectangle(a.pos.X, a.pos.Y, a.w, a.h), rl.NewVector2(a.halfW, a.halfH), a.rotation, rl.White)
+	rl.DrawTexturePro(*a.texture, rl.NewRectangle(a.w * float32(a.CurrFrame), 0, a.w, a.h), rl.NewRectangle(a.pos.X, a.pos.Y, a.w, a.h), rl.NewVector2(a.halfW, a.halfH), a.rotation, rl.White)
 }
 
-func (a *Animation) Update(dt float32) {
-	a.drawTimer += dt
-	if a.drawTimer > a.frameTime {
-		a.drawTimer = 0
+func (a *AnimationData) Update(dt float32) {
+	a.DrawTimer += dt
+	if a.DrawTimer > a.FrameTime {
+		a.DrawTimer = 0
 		a.CurrFrame++
 	}
 }

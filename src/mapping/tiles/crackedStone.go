@@ -8,14 +8,16 @@ var (
 	crackedStoneTex rl.Texture2D
 )
 
-func NewCrackedStoneTile(pos rl.Vector2) *Tile {
+func NewCrackedStoneTile(pos rl.Vector2, w, h float32) Tile {
 	if crackedStoneTex.ID == 0 {
 		println("Loading cracked stone tile texture.")
-		crackedStoneTex = rl.LoadTexture("src/assets/map/crackedStoneTile.png")
+		crackedStoneTex = rl.LoadTexture("src/assets/map/tiles/crackedStone.png")
 	}
-	return &Tile{
+	return Tile (&BaseTile {
 		Pos: pos,
 		Resistance: 1.1,   // Multiplier of current deceleration number
 		texture: &crackedStoneTex,
-	}
+		W: w,
+		H: h,
+	})
 }

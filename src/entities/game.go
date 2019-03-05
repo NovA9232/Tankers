@@ -28,6 +28,7 @@ type Game struct {
 }
 
 func (g *Game) Update(dt float32) {
+	g.WorldMap.Update(dt)
 	g.Ent.UpdateAllEntites(dt)
 	for i := 0; i < len(g.Anim); i++ {
 		g.Anim[i].Update(dt)
