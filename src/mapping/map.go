@@ -2,7 +2,6 @@ package mapping
 
 import (
 	"github.com/gen2brain/raylib-go/raylib"
-	"math"
 	"mapping/tiles"
 )
 
@@ -11,7 +10,7 @@ import (
 //}
 
 type Map struct {
-	Tiles []tiles.Tile
+	Tiles []tiles.Tile    // First is x, second is y. Each array is a vertical strip of tiles
 	Width int   // In number of tiles
 	Height int
 	TileW int
@@ -23,14 +22,15 @@ func (m *Map) GetResistanceAt(x, y float32) float32 {
 		return 1
 	}
 
-	xTileNum := int(math.Floor(float64(x/float32(m.TileW))))
-	yTileNum := int(math.Floor(float64(y/float32(m.TileW))))
-	tileNum := int((m.Width * yTileNum) + xTileNum)
-	if tileNum > len(m.Tiles) {
-		return 1
+	for i := 0; i < len(m.Tiles); i++ {
+		p := m.Tiles[i].GetPos()
+		W, H := m.Tiles[i].GetDimensions()
+		if p.X < x && p.Y < y && p.X + W > x && p.Y + H > y {  // If in bounds
+			return m.Tiles[i].GetResistance()
+		}
 	}
 
-	return m.Tiles[tileNum].GetResistance()
+	return 1
 }
 
 func (m *Map) Draw() {
@@ -52,15 +52,8 @@ func TestMap(w, h int) *Map {
 	m.TileW = 32
 	m.TileH = 32
 
-	for i := 0; i < m.Width; i++ {
-		for j := 0; j< m.Height; j++ {
-			if i < 3 {
-				m.Tiles = append(m.Tiles, tiles.NewWaterTile(rl.NewVector2(float32(i*m.TileW), float32(j*m.TileH)),float32(m.TileW), float32(m.TileH)))
-			} else {
-				m.Tiles = append(m.Tiles, tiles.NewConcreteTile(rl.NewVector2(float32(i*m.TileW), float32(j*m.TileH)),float32(m.TileW), float32(m.TileH)))
-			}
-		}
-	}
+	m.Tiles = append(m.Tiles, tiles.NewWaterTile(rl.NewVector2(0, 0), float32(m.TileW*5), float32(m.TileH*23)))
+	m.Tiles = append(m.Tiles, tiles.NewConcreteTile(rl.NewVector2(float32(m.TileW*5), 0), 1120, 736))
 
 	return m
 }

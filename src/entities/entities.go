@@ -9,7 +9,8 @@ var (
 )
 
 type Entity interface { // Interface for body
-	Thing
+  Draw()
+  Update(float32)
 }
 
 type Projectile interface {
@@ -21,18 +22,30 @@ type Projectile interface {
 type Entities struct {
 	players []*Tank
 	projec []Projectile			 // Projectiles
+	targets []*Target
+	other []Entity
 }
 
 func (e *Entities) AddPlayer(pos rl.Vector2) {
 	e.players = append(e.players, NewTank(len(e.players), pos))
 }
 
+func (e *Entities) AddTarget(pos rl.Vector2, w, h int) {
+	e.targets = append(e.targets, NewTarget(pos, w, h))
+}
+
 func (e *Entities) DrawAllEntites() {
 	for i := 0; i < len(e.players); i++ {
 		e.players[i].Draw()
 	}
+	for i := 0; i < len(e.targets); i++ {
+		e.targets[i].Draw()
+	}
 	for i := 0; i < len(e.projec); i++ {
 		e.projec[i].Draw()
+	}
+	for i := 0; i < len(e.other); i++ {
+		e.other[i].Draw()
 	}
 }
 
@@ -40,8 +53,14 @@ func (e *Entities) UpdateAllEntites(dt float32) {
 	for i := 0; i < len(e.players); i++ {
 		e.players[i].Update(dt)
 	}
+	for i := 0; i < len(e.targets); i++ {
+		e.targets[i].Update(dt)
+	}
 	for i := 0; i < len(e.projec); i++ {
 		e.projec[i].Update(dt)
+	}
+	for i := 0; i < len(e.other); i++ {
+		e.other[i].Update(dt)
 	}
 
 	e.checkProjectileTimeouts()

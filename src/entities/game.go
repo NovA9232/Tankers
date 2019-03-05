@@ -1,6 +1,7 @@
 package entities
 
 import (
+	b2 "github.com/neguse/go-box2d-lite/box2dlite"
   "github.com/gen2brain/raylib-go/raylib"
 	"anim"
 	"mapping"
@@ -16,18 +17,15 @@ var (
 	SCREEN_H float32
 )
 
-type Thing interface {  // Can be drawn and updated
-  Draw()
-  Update(float32)
-}
-
 type Game struct {
+	PhysicsWorld *b2.World
 	WorldMap *mapping.Map
 	Ent *Entities
 	Anim []*anim.Animation
 }
 
 func (g *Game) Update(dt float32) {
+	g.PhysicsWorld.Step(float64(dt))
 	g.WorldMap.Update(dt)
 	g.Ent.UpdateAllEntites(dt)
 	for i := 0; i < len(g.Anim); i++ {
