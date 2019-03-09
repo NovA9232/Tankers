@@ -1,11 +1,7 @@
 package entities
 
-import (
-	"github.com/ByteArena/box2d"
-)
-
 type Projec struct {
-	box2d.B2Body
+	BaseBody
 	timeOfCreation float32
 	timeLimit float32
 }

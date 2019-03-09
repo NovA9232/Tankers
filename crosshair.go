@@ -4,12 +4,6 @@ import (
 	"github.com/gen2brain/raylib-go/raylib"
 )
 
-const (
-	crosshairL = 7   // Length of each part of the crosshair
-	crosshairW = 2    // Width of each part of the crosshair. Works best with multiples of 2
-	crosshairGap = 3 // Gap between each part of crosshair
-)
-
 var (
 	crosshairCol rl.Color = rl.Green
 )

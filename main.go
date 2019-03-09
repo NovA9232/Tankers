@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gen2brain/raylib-go/raylib"
-	"github.com/ByteArena/box2d"
 	"math"
 
 	"mapping"
@@ -13,6 +12,10 @@ import (
 const (
 	SCREEN_W = 1280
 	SCREEN_H = 720
+
+	crosshairL = 7   // Length of each part of the crosshair
+	crosshairW = 2    // Width of each part of the crosshair. Works best with multiples of 2
+	crosshairGap = 3 // Gap between each part of crosshair
 )
 
 var (
@@ -31,14 +34,12 @@ func main() {
 	rl.HideCursor()
 
 	G := &entities.Game {
-		PhysicsWorld: box2d.MakeB2World(box2d.NewB2Vec2(0, 0)),
 		WorldMap: mapping.TestMap(SCREEN_W, SCREEN_H),
 		Ent: new(entities.Entities),
 		Anim: []*anim.Animation{},
 	}
 	entities.G = G
 	G.Ent.AddPlayer(rl.NewVector2(400, 500))
-	G.Ent.AddTarget(rl.NewVector2(1000, 200), 10, 100)
 
 	for !rl.WindowShouldClose() {
 		G.Update(rl.GetFrameTime())

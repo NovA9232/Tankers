@@ -2,13 +2,11 @@ package entities
 
 import (
   "github.com/gen2brain/raylib-go/raylib"
-	b2 "github.com/neguse/go-box2d-lite/box2dlite"
 	"tools"
 )
 
 const (
 	SHELL_TIMEOUT float32 = 6 // Time in seconds
-	SHELL_MASS float64 = 2
 )
 
 var (
@@ -27,26 +25,27 @@ func NewShell(IDnum int, pos, parentVel rl.Vector2, vel, angle float32, damage, 
 		println("Loading shell texture.")
 		shellTex = rl.LoadTexture("src/assets/shell/shell.png")
 	}
-	v := tools.GetXYComponent(vel, (TwoPi-angle)+rl.Pi)
-	v.X += parentVel.X
-	v.Y -= parentVel.Y
-	s.Velocity.X, s.Velocity.Y = float64(v.X), float64(v.Y)
-
-	bodDef := box2d.NewB2BodyDef()
-	bodDef.Position.Set(float64(pos.X), float64(pos.Y))
-	bodDef.Active = true
-	bodDef.Velocity = 
-
+	s := new(Shell)
+  s.BaseBody = NewBody(NewID(IDnum, "shell"), pos, vel, angle)
 	s.Damage = damage
+	s.Size = rl.NewVector2(float32(W), float32(H))
 	s.timeOfCreation = rl.GetTime()
 	s.timeLimit = SHELL_TIMEOUT
 
+	v := tools.GetXYComponent(s.VelMag, s.Angle)
+	v.X += parentVel.X
+	v.Y += parentVel.Y
+	s.VelMag = tools.GetMagnitude(&v)
 	return s
 }
 
 func (s *Shell) Draw() {
-	rl.DrawTexturePro(shellTex, shellDrawFrame, rl.NewRectangle(float32(s.Position.X), float32(s.Position.Y), shellDrawFrame.Width, shellDrawFrame.Height), rl.NewVector2(shellDrawFrame.Width/2, shellDrawFrame.Height/2), float32(s.Rotation)*rl.Rad2deg, rl.White)
+	rl.DrawTexturePro(shellTex, shellDrawFrame, rl.NewRectangle(s.Pos.X, s.Pos.Y, shellDrawFrame.Width, shellDrawFrame.Height), rl.NewVector2(shellDrawFrame.Width/2, shellDrawFrame.Height/2), s.Angle*rl.Rad2deg, rl.White)
 }
 
-func (s *Shell) Update(dt float32) {}
+func (s *Shell) Update(dt float32) {
+	vel := tools.GetXYComponent(s.VelMag, s.Angle)
+	s.Pos.X += (vel.X*dt)
+	s.Pos.Y -= (vel.Y*dt)
+}
 
