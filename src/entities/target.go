@@ -2,21 +2,24 @@ package entities
 
 import (
 	"github.com/gen2brain/raylib-go/raylib"
-	b2 "github.com/neguse/go-box2d-lite/box2dlite"
+	"github.com/ByteArena/box2d"
 )
 
 type Target struct {
-	b2.Body
+	box2d.B2Body
 }
 
 func NewTarget(pos rl.Vector2, w, h int) *Target {
-	t := new(Target)
-	t.Body.Set(&b2.Vec2{float64(w), float64(h)}, 100000)
-	t.Position.X, t.Position.Y = float64(pos.X), float64(pos.Y)
-	t.Friction = 0
+	bodDef := box2d.NewB2BodyDef()
+	bodDef.Position.Set(float64(pos.X), float64(pos.Y))
+	bodDef.Active = true
 
-	G.PhysicsWorld.AddBody(&t.Body)
-	return t
+	shape := box2d.NewB2EdgeShape()
+	shape.Set(box2d.MakeB2Vec2(float32()))
+
+	t := &Target {
+		box2d.B2Body: box2d.NewB2Body(bodDef, G.PhysicsWorld),
+	}
 }
 
 func (t *Target) Draw() {

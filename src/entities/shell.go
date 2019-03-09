@@ -27,21 +27,20 @@ func NewShell(IDnum int, pos, parentVel rl.Vector2, vel, angle float32, damage, 
 		println("Loading shell texture.")
 		shellTex = rl.LoadTexture("src/assets/shell/shell.png")
 	}
-	s := new(Shell)
-	s.Body.Set(&b2.Vec2{float64(W), float64(H)}, SHELL_MASS)
-	s.Position.X, s.Body.Position.Y = float64(pos.X), float64(pos.Y)
-	s.Rotation = float64(angle)
-	s.Friction = 0
-	s.Damage = damage
-	s.timeOfCreation = rl.GetTime()
-	s.timeLimit = SHELL_TIMEOUT
-
 	v := tools.GetXYComponent(vel, (TwoPi-angle)+rl.Pi)
 	v.X += parentVel.X
 	v.Y -= parentVel.Y
 	s.Velocity.X, s.Velocity.Y = float64(v.X), float64(v.Y)
 
-	G.PhysicsWorld.AddBody(&s.Body)
+	bodDef := box2d.NewB2BodyDef()
+	bodDef.Position.Set(float64(pos.X), float64(pos.Y))
+	bodDef.Active = true
+	bodDef.Velocity = 
+
+	s.Damage = damage
+	s.timeOfCreation = rl.GetTime()
+	s.timeLimit = SHELL_TIMEOUT
+
 	return s
 }
 

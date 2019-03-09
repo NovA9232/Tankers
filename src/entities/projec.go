@@ -1,11 +1,11 @@
 package entities
 
 import (
-	b2 "github.com/neguse/go-box2d-lite/box2dlite"
+	"github.com/ByteArena/box2d"
 )
 
 type Projec struct {
-	b2.Body
+	box2d.B2Body
 	timeOfCreation float32
 	timeLimit float32
 }

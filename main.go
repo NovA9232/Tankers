@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gen2brain/raylib-go/raylib"
-	b2 "github.com/neguse/go-box2d-lite/box2dlite"
+	"github.com/ByteArena/box2d"
 	"math"
 
 	"mapping"
@@ -31,7 +31,7 @@ func main() {
 	rl.HideCursor()
 
 	G := &entities.Game {
-		PhysicsWorld: b2.NewWorld(b2.Vec2{}, 10),
+		PhysicsWorld: box2d.MakeB2World(box2d.NewB2Vec2(0, 0)),
 		WorldMap: mapping.TestMap(SCREEN_W, SCREEN_H),
 		Ent: new(entities.Entities),
 		Anim: []*anim.Animation{},

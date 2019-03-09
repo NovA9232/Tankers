@@ -1,7 +1,7 @@
 package entities
 
 import (
-	b2 "github.com/neguse/go-box2d-lite/box2dlite"
+	"github.com/ByteArena/box2d"
   "github.com/gen2brain/raylib-go/raylib"
 	"anim"
 	"mapping"
@@ -18,7 +18,7 @@ var (
 )
 
 type Game struct {
-	PhysicsWorld *b2.World
+	PhysicsWorld *box2d.B2World
 	WorldMap *mapping.Map
 	Ent *Entities
 	Anim []*anim.Animation
