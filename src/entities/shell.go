@@ -17,7 +17,6 @@ var (
 type Shell struct {
 	Projec
 	Damage int
-	Size rl.Vector2    // Where X is Width, Y is Height
 }
 
 func NewShell(IDnum int, pos, parentVel rl.Vector2, vel, angle float32, damage, W, H int) *Shell {
@@ -26,9 +25,8 @@ func NewShell(IDnum int, pos, parentVel rl.Vector2, vel, angle float32, damage, 
 		shellTex = rl.LoadTexture("src/assets/shell/shell.png")
 	}
 	s := new(Shell)
-  s.BaseBody = NewBody(NewID(IDnum, "shell"), pos, vel, angle)
+  s.BaseBody = NewBody(NewID(IDnum, "shell"), pos, float32(W), float32(H), vel, angle)
 	s.Damage = damage
-	s.Size = rl.NewVector2(float32(W), float32(H))
 	s.timeOfCreation = rl.GetTime()
 	s.timeLimit = SHELL_TIMEOUT
 

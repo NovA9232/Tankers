@@ -40,6 +40,7 @@ func main() {
 	}
 	entities.G = G
 	G.Ent.AddPlayer(rl.NewVector2(400, 500))
+	G.Ent.AddTankEnemy(rl.NewVector2(800, 500))
 
 	for !rl.WindowShouldClose() {
 		G.Update(rl.GetFrameTime())

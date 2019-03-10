@@ -16,6 +16,7 @@ const (
 	TANK_CANN_TURN_SPD float32 = TwoPi
 	TANK_SHELL_SPEED float32 = 1400
 	TANK_FIRE_COOLDOWN float32 = 0.2
+	TANK_SHELL_DAMAGE int = 20
 
 	HALF_TANK_W = TANK_W/2
 	HALF_TANK_H = TANK_H/2
@@ -30,18 +31,20 @@ var (
 type Tank struct {
   BaseBody
 	Deceleration float64
+	isPlayer bool
 	Cannon *tankCannon
 }
 
-func NewTank(IDNum int, pos rl.Vector2) *Tank {
+func NewTank(IDNum int, pos rl.Vector2, player bool) *Tank {
 	if tankTex.ID == 0 {
 		println("Loading tankBody.png texture.")
 		tankTex = rl.LoadTexture("src/assets/tank/tankBodySand.png")
 	}
 
 	t := new(Tank)
-  t.BaseBody = NewBody(NewID(IDNum, "tank"), pos, 0, 0)
+  t.BaseBody = NewBody(NewID(IDNum, "tank"), pos, TANK_W, TANK_H, 0, 0)
 	t.Deceleration = TANK_DECEL
+	t.isPlayer = player
 	t.newCannon()
 
 	return t
@@ -94,6 +97,7 @@ type tankCannon struct {
 	angle float32
 	lastShotTime float32
 	firstShot bool
+	canShoot bool
 
 	recoilTimer float32
 	recoilFrame int
@@ -139,7 +143,7 @@ func (c *tankCannon) update(dt float32) {
 		c.angle = angleToMouse
 	}
 
-	if rl.IsMouseButtonDown(0) && (rl.GetTime() - c.lastShotTime > TANK_FIRE_COOLDOWN || c.firstShot) {
+	if c.parent.isPlaye && rl.IsMouseButtonDown(0) && (rl.GetTime() - c.lastShotTime > TANK_FIRE_COOLDOWN || c.firstShot) {
 		c.Fire()
 		if c.firstShot {
 			c.firstShot = false
@@ -167,7 +171,7 @@ func (c *tankCannon) getEndOfCannPos() rl.Vector2 {
 
 func (c *tankCannon) Fire() {
 	endPos := c.getEndOfCannPos()
-	G.Ent.projec = append(G.Ent.projec, Projectile( NewShell(len(G.Ent.projec), endPos, tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), 100, int(shellDrawFrame.Width),  int(shellDrawFrame.Height))))
+	G.Ent.projec = append(G.Ent.projec, Projectile( NewShell(len(G.Ent.projec), endPos, tools.GetXYComponent(c.parent.VelMag, c.parent.Angle), TANK_SHELL_SPEED, c.angle + (rl.Pi/2), TANK_SHELL_DAMAGE, int(shellDrawFrame.Width),  int(shellDrawFrame.Height))))
 	c.lastShotTime = rl.GetTime()
 
 	G.Anim = append(G.Anim, anim.NewExplosion(endPos))
