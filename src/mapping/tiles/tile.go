@@ -9,6 +9,8 @@ type Tile interface {
 	Draw()
 	Update(float32)
 	GetResistance() float32
+	GetPos() rl.Vector2
+	GetDimensions() (float32, float32)
 }
 
 type BaseTile struct {
@@ -20,13 +22,21 @@ type BaseTile struct {
 }
 
 func (t *BaseTile) Draw() {
-	rl.DrawTextureEx(*t.texture, t.Pos, 0, 1, rl.White)
+	rl.DrawTexturePro(*t.texture, rl.NewRectangle(0, 0, t.W, t.H), rl.NewRectangle(t.Pos.X, t.Pos.Y, t.W, t.H), rl.NewVector2(0, 0), 0, rl.White)
 }
 
 func (t *BaseTile) Update(dt float32) {}   // So it works with interface
 
 func (t *BaseTile) GetResistance() float32 {
 	return t.Resistance
+}
+
+func (t *BaseTile) GetPos() rl.Vector2 {
+	return t.Pos
+}
+
+func (t *BaseTile) GetDimensions() (float32, float32) {
+	return t.W, t.H
 }
 
 

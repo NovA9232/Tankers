@@ -33,7 +33,7 @@ func NewWaterTile(pos rl.Vector2, w, h float32) Tile {
 		AnimatedTile: AnimatedTile {
 			BaseTile: BaseTile {
 				Pos: pos,
-				Resistance: 100,
+				Resistance: 3,
 				texture: &waterTex,
 				W: w,
 				H: h,
