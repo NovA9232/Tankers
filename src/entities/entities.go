@@ -20,16 +20,16 @@ type Projectile interface {
 
 type Entities struct {
 	players []*Tank
-	enemies []Enemy
 	projec []Projectile			 // Projectiles
+}
+
+func (e *Entities) AddPlayer(pos rl.Vector2) {
+	e.players = append(e.players, NewTank(len(e.players), pos))
 }
 
 func (e *Entities) DrawAllEntites() {
 	for i := 0; i < len(e.players); i++ {
 		e.players[i].Draw()
-	}
-	for i := 0; i < len(e.enemies); i++ {
-		e.enemies[i].Draw()
 	}
 	for i := 0; i < len(e.projec); i++ {
 		e.projec[i].Draw()
@@ -39,9 +39,6 @@ func (e *Entities) DrawAllEntites() {
 func (e *Entities) UpdateAllEntites(dt float32) {
 	for i := 0; i < len(e.players); i++ {
 		e.players[i].Update(dt)
-	}
-	for i := 0; i < len(e.enemies); i++ {
-		e.enemies[i].Update(dt)
 	}
 	for i := 0; i < len(e.projec); i++ {
 		e.projec[i].Update(dt)
