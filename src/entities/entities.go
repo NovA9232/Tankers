@@ -6,6 +6,7 @@ import (
 
 var (
 	G *Game
+	Shader *rl.Shader
 )
 
 type Entity interface { // Interface for body

@@ -33,10 +33,10 @@ func main() {
 	rl.SetTargetFPS(144)
 	rl.HideCursor()
 
-	target := rl.LoadRenderTexture(SCREEN_W, SCREEN_H)
+	//target := rl.LoadRenderTexture(SCREEN_W, SCREEN_H)
 
-	shader := rl.LoadShader("", "src/shaders/test.fs")
-	_ = shader
+	shader := rl.LoadShader("", "src/shaders/lsd.fs")
+	entities.Shader = &shader
 
 	G := &entities.Game {
 		WorldMap: mapping.TestMap(SCREEN_W, SCREEN_H),
@@ -48,16 +48,18 @@ func main() {
 
 	for !rl.WindowShouldClose() {
 		G.Update(rl.GetFrameTime())
+		rl.SetShaderValue(shader, rl.GetShaderLocation(shader, "time"), []float32{rl.GetTime()*4}, 1)
+
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.Black)
 
-		rl.BeginTextureMode(target)
+		//rl.BeginTextureMode(target)
 		G.Draw()
-		rl.EndTextureMode()
+		//rl.EndTextureMode()
 
-		rl.BeginShaderMode(shader)
-		rl.DrawTextureRec(target.Texture, rl.NewRectangle(0, 0, float32(target.Texture.Width), float32(-target.Texture.Height)), rl.NewVector2(0, 0), rl.White)
-		rl.EndShaderMode()
+		//rl.BeginShaderMode(shader)
+		//rl.DrawTextureRec(target.Texture, rl.NewRectangle(0, 0, float32(target.Texture.Width), float32(-target.Texture.Height)), rl.NewVector2(0, 0), rl.White)
+		//rl.EndShaderMode()
 
 		drawCrosshair()
 
