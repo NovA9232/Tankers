@@ -45,10 +45,11 @@ func main() {
 	}
 	entities.G = G
 	G.Ent.AddPlayer(rl.NewVector2(400, 500))
+	G.Ent.AddBarrelExplosive(rl.NewVector2(1000, 500))
 
 	for !rl.WindowShouldClose() {
 		G.Update(rl.GetFrameTime())
-		rl.SetShaderValue(shader, rl.GetShaderLocation(shader, "time"), []float32{rl.GetTime()*4}, 1)
+		//rl.SetShaderValue(shader, rl.GetShaderLocation(shader, "time"), []float32{rl.GetTime()*4}, 1)
 
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.Black)

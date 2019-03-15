@@ -21,14 +21,15 @@ type Projectile interface {
 
 type Entities struct {
 	players []*Tank
+	explosives []Explosive
 	projec []Projectile			 // Projectiles
 }
 
-func (e *Entities) AddPlayer(pos rl.Vector2) {
-	e.players = append(e.players, NewTank(len(e.players), pos))
-}
 
 func (e *Entities) DrawAllEntites() {
+	for i := 0; i < len(e.explosives); i++ {
+		e.explosives[i].Draw()
+	}
 	for i := 0; i < len(e.players); i++ {
 		e.players[i].Draw()
 	}
@@ -44,8 +45,12 @@ func (e *Entities) UpdateAllEntites(dt float32) {
 	for i := 0; i < len(e.projec); i++ {
 		e.projec[i].Update(dt)
 	}
+	for i := 0; i < len(e.explosives); i++ {
+		e.explosives[i].Update(dt)
+	}
 
 	e.checkProjectileTimeouts()
+	e.checkExplosives()
 }
 
 func (e *Entities) checkProjectileTimeouts() {
@@ -55,6 +60,16 @@ func (e *Entities) checkProjectileTimeouts() {
 			copy(e.projec[i:], e.projec[i+1:])
 			e.projec[len(e.projec)-1] = nil
 			e.projec = e.projec[:len(e.projec)-1]
+		}
+	}
+}
+
+func (e *Entities) checkExplosives() {
+	for i := 0; i < len(e.explosives); i++ {
+		if e.explosives[i].Exploded() {
+			copy(e.explosives[i:], e.explosives[i+1:])
+			e.explosives[len(e.explosives)-1] = nil
+			e.explosives = e.explosives[:len(e.explosives)-1]
 		}
 	}
 }

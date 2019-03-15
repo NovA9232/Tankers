@@ -5,11 +5,13 @@ import (
 	"math"
   "tools"
 	"anim"
+	"ui"
 )
 
 const (
   TANK_W float32 = 60
   TANK_H float32 = 100
+	TANK_MAX_HEALTH int = 100
   TANK_ACCELL = 400
   TANK_DECEL = 5
   TANK_TURN_SPD float32 = rl.Pi
@@ -31,6 +33,7 @@ type Tank struct {
   BaseBody
 	Deceleration float64
 	Cannon *tankCannon
+	Health *ui.HealthBar
 }
 
 func NewTank(IDNum int, pos rl.Vector2) *Tank {
@@ -42,19 +45,23 @@ func NewTank(IDNum int, pos rl.Vector2) *Tank {
 	t := new(Tank)
   t.BaseBody = NewBody(NewID(IDNum, "tank"), pos, 0, 0)
 	t.Deceleration = TANK_DECEL
+	t.Health = ui.NewHealthBar(TANK_MAX_HEALTH, TANK_MAX_HEALTH)
 	t.newCannon()
 
 	return t
 }
 
 func (t *Tank) Draw() {
-	rl.BeginShaderMode(*Shader)
+	//rl.BeginShaderMode(*Shader)
 	rl.DrawTexturePro(tankTex, tankFrame, rl.NewRectangle(t.Pos.X, t.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), t.Angle*rl.Rad2deg, rl.White)
 	t.Cannon.draw()
-	rl.EndShaderMode()
+	//rl.EndShaderMode()
+	t.Health.Draw()
 }
 
 func (t *Tank) Update(dt float32) {
+	t.Health.Update()
+	t.Health.Pos.X, t.Health.Pos.Y = t.Pos.X, t.Pos.Y
   if rl.IsKeyDown(rl.KeyA) {
     t.Angle -= TANK_TURN_SPD * dt
   }
@@ -68,7 +75,9 @@ func (t *Tank) Update(dt float32) {
 		t.accelerate(dt, -1)
 	}
 
-  t.applyResistance(dt)
+	if t.VelMag > 0 {
+		t.applyResistance(dt)
+	}
 
 	vel := tools.GetXYComponent(t.VelMag, t.Angle)
   t.Pos.X += (vel.X*dt)
