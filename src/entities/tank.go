@@ -48,8 +48,10 @@ func NewTank(IDNum int, pos rl.Vector2) *Tank {
 }
 
 func (t *Tank) Draw() {
+	rl.BeginShaderMode(*Shader)
 	rl.DrawTexturePro(tankTex, tankFrame, rl.NewRectangle(t.Pos.X, t.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), t.Angle*rl.Rad2deg, rl.White)
 	t.Cannon.draw()
+	rl.EndShaderMode()
 }
 
 func (t *Tank) Update(dt float32) {
