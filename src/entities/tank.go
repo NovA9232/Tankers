@@ -17,7 +17,52 @@ const (
 	TANK_SHELL_SPEED float32 = 1400
 	TANK_FIRE_COOLDOWN float32 = 0.2
 
-KeyS) {
+	HALF_TANK_W = TANK_W/2
+	HALF_TANK_H = TANK_H/2
+)
+
+var (
+	tankTex rl.Texture2D
+	tankFrame rl.Rectangle = rl.NewRectangle(0, 2, TANK_W, TANK_H-2) // Part of tank was redrawn (small line)
+	tankCannonTex rl.Texture2D
+)
+
+type Tank struct {
+  BaseBody
+	Deceleration float64
+	Cannon *tankCannon
+}
+
+func NewTank(IDNum int, pos rl.Vector2) *Tank {
+	if tankTex.ID == 0 {
+		println("Loading tankBody.png texture.")
+		tankTex = rl.LoadTexture("src/assets/tank/tankBodySand.png")
+	}
+
+	t := new(Tank)
+  t.BaseBody = NewBody(NewID(IDNum, "tank"), pos, 0, 0)
+	t.Deceleration = TANK_DECEL
+	t.newCannon()
+
+	return t
+}
+
+func (t *Tank) Draw() {
+	rl.DrawTexturePro(tankTex, tankFrame, rl.NewRectangle(t.Pos.X, t.Pos.Y, TANK_W, TANK_H), rl.NewVector2(HALF_TANK_W, HALF_TANK_H), t.Angle*rl.Rad2deg, rl.White)
+	t.Cannon.draw()
+}
+
+func (t *Tank) Update(dt float32) {
+  if rl.IsKeyDown(rl.KeyA) {
+    t.Angle -= TANK_TURN_SPD * dt
+  }
+	if rl.IsKeyDown(rl.KeyD) {
+    t.Angle += TANK_TURN_SPD * dt
+	}
+	if rl.IsKeyDown(rl.KeyW) {
+		t.accelerate(dt, 1)
+	}
+	if rl.IsKeyDown(rl.KeyS) {
 		t.accelerate(dt, -1)
 	}
 
