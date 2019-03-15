@@ -2,8 +2,10 @@ package entities
 
 import (
   "github.com/gen2brain/raylib-go/raylib"
-	"tools"
 	"math"
+	"fmt"
+
+	"tools"
 )
 
 type Explosive interface {
@@ -28,7 +30,10 @@ func (e *baseExplosive) Explode() {
 	for i := 0; i < len(G.Ent.players); i++ {
 		if tools.InCircle(e.Pos, e.explRadiusSqr, G.Ent.players[i].Pos) {
 			dist := math.Sqrt( math.Pow(float64(e.Pos.X - G.Ent.players[i].Pos.X), 2) + math.Pow(float64(e.Pos.Y - G.Ent.players[i].Pos.Y), 2) )
-			G.Ent.players[i].Health.Val -= int(float64(e.MaxDamage)/(dist*dist))   // Inverse square law
+			fmt.Println(dist ,"dist")
+			damage := int(math.Pow(3, (-dist*3/float64(e.MaxDamage)))*float64(e.MaxDamage))   // Inverse square law
+			fmt.Println(damage, "damage")
+			G.Ent.players[i].Health.Val -= damage
 			if !e.hasExploded { e.hasExploded = true }
 		}
 	}

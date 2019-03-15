@@ -34,6 +34,7 @@ type Tank struct {
 	Deceleration float64
 	Cannon *tankCannon
 	Health *ui.HealthBar
+	Dead bool
 }
 
 func NewTank(IDNum int, pos rl.Vector2) *Tank {
@@ -45,6 +46,7 @@ func NewTank(IDNum int, pos rl.Vector2) *Tank {
 	t := new(Tank)
   t.BaseBody = NewBody(NewID(IDNum, "tank"), pos, 0, 0)
 	t.Deceleration = TANK_DECEL
+	t.Dead = false
 	t.Health = ui.NewHealthBar(TANK_MAX_HEALTH, TANK_MAX_HEALTH)
 	t.newCannon()
 
@@ -62,6 +64,10 @@ func (t *Tank) Draw() {
 func (t *Tank) Update(dt float32) {
 	t.Health.Update()
 	t.Health.Pos.X, t.Health.Pos.Y = t.Pos.X, t.Pos.Y
+	if t.Health.Val <= 0 && !t.Dead {
+		t.Dead = true
+	}
+
   if rl.IsKeyDown(rl.KeyA) {
     t.Angle -= TANK_TURN_SPD * dt
   }

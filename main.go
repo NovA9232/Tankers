@@ -45,7 +45,9 @@ func main() {
 	}
 	entities.G = G
 	G.Ent.AddPlayer(rl.NewVector2(400, 500))
-	G.Ent.AddBarrelExplosive(rl.NewVector2(1000, 500))
+	G.Ent.AddProximityExplosive(rl.NewVector2(1000, 500))
+	G.Ent.AddProximityExplosive(rl.NewVector2(1000, 400))
+	G.Ent.AddProximityExplosive(rl.NewVector2(800, 200))
 
 	for !rl.WindowShouldClose() {
 		G.Update(rl.GetFrameTime())

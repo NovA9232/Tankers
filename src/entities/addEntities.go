@@ -12,3 +12,6 @@ func (e *Entities) AddBarrelExplosive(pos rl.Vector2) {
 	e.explosives = append(e.explosives, Explosive( NewBarrelExplosive(pos) ))
 }
 
+func (e *Entities) AddProximityExplosive(pos rl.Vector2) {
+	e.explosives = append(e.explosives, Explosive( NewProximityExplosive(pos) ))
+}

@@ -49,6 +49,7 @@ func (e *Entities) UpdateAllEntites(dt float32) {
 		e.explosives[i].Update(dt)
 	}
 
+	e.checkForDeadPlayers()
 	e.checkProjectileTimeouts()
 	e.checkExplosives()
 }
@@ -70,6 +71,16 @@ func (e *Entities) checkExplosives() {
 			copy(e.explosives[i:], e.explosives[i+1:])
 			e.explosives[len(e.explosives)-1] = nil
 			e.explosives = e.explosives[:len(e.explosives)-1]
+		}
+	}
+}
+
+func (e *Entities) checkForDeadPlayers() {
+	for i := 0; i < len(e.players); i++ {
+		if e.players[i].Dead {
+			copy(e.players[i:], e.players[i+1:])
+			e.players[len(e.players)-1] = nil
+			e.players = e.players[:len(e.players)-1]
 		}
 	}
 }
