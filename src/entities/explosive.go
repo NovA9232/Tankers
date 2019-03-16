@@ -34,9 +34,9 @@ func (e *baseExplosive) Explode() {
 			damage := int(math.Pow(3, (-dist*3/float64(e.MaxDamage)))*float64(e.MaxDamage))   // Inverse square law
 			fmt.Println(damage, "damage")
 			G.Ent.players[i].Health.Val -= damage
-			if !e.hasExploded { e.hasExploded = true }
 		}
 	}
+	if !e.hasExploded { e.hasExploded = true }
 }
 
 //func (e *baseExplosive) checkForProjectilesInside() bool {  // True if projectile is in circle bounds
